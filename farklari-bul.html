@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MSS WEB SİTESİ - FARKLARI BUL OYUNU</title>
+  <style>
+    /* Genel Stil */
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f9f3fc;
+    }
+
+    /* Başlık Stili */
+    h1 {
+      color: #9c27b0;
+      text-align: center;
+      border-bottom: 3px solid #9c27b0;
+      padding-bottom: 10px;
+      margin-bottom: 30px;
+    }
+
+    /* Oyun Konteyneri */
+    .game-container {
+      background-color: white;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(156, 39, 176, 0.2);
+      padding: 30px;
+      text-align: center;
+    }
+
+    /* Resimler Alanı */
+    .images-area {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      margin: 20px 0;
+    }
+    .image-box {
+      position: relative;
+      border: 3px solid #9c27b0;
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: crosshair;
+    }
+    .game-image {
+      width: 400px;
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+    /* Fark İşaretçisi */
+    .difference-mark {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: #2e7d32;
+      border: 2px solid white;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      transform: translate(-50%, -50%);
+      display: none;
+    }
+
+    /* Oyun Bilgileri */
+    .game-stats {
+      font-size: 20px;
+      color: #4a148c;
+      margin: 20px 0;
+    }
+    .stats-item {
+      margin: 10px;
+      display: inline-block;
+    }
+    .game-btn {
+      padding: 10px 25px;
+      font-size: 18px;
+      background-color: #9c27b0;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 0 10px;
+    }
+    .game-btn:hover {
+      background-color: #7b1fa2;
+    }
+    .message {
+      margin-top: 20px;
+      font-size: 22px;
+      font-weight: bold;
+    }
+    .success {
+      color: #2e7d32;
+    }
+    .error {
+      color: #c62828;
+    }
+  </style>
+</head>
+<body>
+  <h1>MSS WEB SİTESİ - FARKLARI BUL OYUNU</h1>
+
+  <div class="game-container">
+    <div class="game-stats">
+      <div class="stats-item">Bulunan Fark: <span id="found">0</span>/<span id="total">3</span></div>
+      <div class="stats-item">Kalan Süre: <span id="time">60</span> saniye</div>
+      <div class="stats-item">Skor: <span id="score">0</span></div>
+    </div>
+
+    <div class="images-area">
+      <div class="image-box" id="image1Box">
+        <img src="https://picsum.photos/id/237/400/300" alt="Resim 1" class="game-image" id="image1">
+        <div class="difference-mark" id="mark1">1</div>
+        <div class="difference-mark" id="mark2">2</div>
+        <div class="difference-mark" id="mark3">3</div>
+      </div>
+      <div class="image-box" id="image2Box">
+        <img src="https://picsum.photos/id/169/400/300" alt="Resim 2" class="game-image" id="image2">
+      </div>
+    </div>
+
+    <button class="game-btn" onclick="startGame()">Yeni Oyun</button>
+    <button class="game-btn" onclick="showHint()">İpucu Al</button>
+
+    <div id="message" class="message"></div>
+  </div>
+
+  <script>
+    // Oyun Verileri - Farkların Konumları (x, y koordinatları)
+    const levelData = [
+      {
+        image1: "https://picsum.photos/id/237/400/300",
+        image2: "https://picsum.photos/id/169/400/300",
+        differences: [
+          { x: 120, y: 80 },  // Fark 1
+          { x: 250, y: 150 }, // Fark 2
+          { x: 320, y: 220 }  // Fark 3
+        ],
+        hintText: "Bir tanesi üst kısımda, biri ortada, biri alt kısımda!"
+      },
+      {
+        image1: "https://picsum.photos/id/96/400/300",
+        image2: "https://picsum.photos/id/91/400/300",
+        differences: [
+          { x: 80, y: 100 },
+          { x: 200, y: 50 },
+          { x: 350, y: 180 }
+        ],
+        hintText: "Bir tanesi sol, biri üst orta, biri sağda!"
+      },
+      {
+        image1: "https://picsum.photos/id/65/400/300",
+        image2: "https://picsum.photos/id/68/400/300",
+        differences: [
+          { x: 150, y: 120 },
+          { x: 280, y: 90 },
+          { x: 100, y: 200 }
+        ],
+        hintText: "İki tanesi üstte, biri sol alt kısımda!"
+      }
+    ];
+
+    let currentLevel, foundDifferences, remainingTime, score, timerInterval, hintUsed;
+
+    // Oyunu Başlat
+    function startGame() {
+      // Rastgele Seviye Seç
+      currentLevel = levelData[Math.floor(Math.random() * levelData.length)];
+      foundDifferences = 0;
+      remainingTime = 60;
+      score = 0;
+      hintUsed = false;
+
+      // Arayüzü Güncelle
+      document.getElementById("image1").src = currentLevel.image1;
+      document.getElementById("image2").src = currentLevel.image2;
+      document.getElementById("found").textContent = foundDifferences;
+      document.getElementById("total").textContent = currentLevel.differences.length;
+      document.getElementById("time").textContent = remainingTime;
+      document.getElementById("score").textContent = score;
+      document.getElementById("message").textContent = "";
+      document.getElementById("message").className = "message";
+
+      // Fark İşaretçilerini Gizle
+      for (let i = 1; i <= 3; i++) {
+        document.getElementById(`mark${i}`).style.display = "none";
+      }
+
+      // Zamanlayıcıyı Başlat
+      clearInterval(timerInterval);
+      timerInterval = setInterval(updateTimer, 1000);
+
+      // Resim Tıklama Olayını Ekle
+      document.getElementById("image1Box").onclick = handleImageClick;
+    }
+
+    // Zamanlayıcıyı Güncelle
+    function updateTimer() {
+      remainingTime--;
+      document.getElementById("time").textContent = remainingTime;
+
+      if (remainingTime <= 0) {
+        clearInterval(timerInterval);
+        document.getElementById("message").textContent = `Süre Doldu! Bulunan fark: ${foundDifferences}/${currentLevel.differences.length}`;
+        document.getElementById("message").className = "message error";
+        document.getElementById("image1Box").onclick = null;
+      }
+    }
+
+    // Resim Tıklaması İşle
+    function handleImageClick(event) {
+      const rect = event.target.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+
+      // Fark Kontrolü
+      for (let i = 0; i < currentLevel.differences.length; i++) {
+        const diff = currentLevel.differences[i];
+        // Farkın etrafında 20px'lik bir alan - tıklama bu alanda ise doğru kabul et
+        if (Math.abs(x - diff.x) < 20 && Math.abs(y - diff.y) < 20) {
+          // Fark zaten bulunmuş mu?
+          const mark = document.getElementById(`mark${i+1}`);
+          if (mark.style.display === "none") {
+            foundDifferences++;
+            score += 20;
+            mark.style.display = "flex";
+            mark.style.left = `${diff.x}px`;
+            mark.style.top = `${diff.y}px`;
+
+            // Arayüzü Güncelle
+            document.getElementById("found").textContent = foundDifferences;
+            document.getElementById("score").textContent = score;
+            document.getElementById("message").textContent = "Harika! Fark buldun ✨";
+            document.getElementById("message").className = "message success";
+
+            // Kazanma Kontrolü
+            if (foundDifferences === currentLevel.differences.length) {
+              clearInterval(timerInterval);
+              score += remainingTime * 5; // Kalan süreden ekstra skor
+              document.getElementById("score").textContent = score;
+              document.getElementById("message").textContent = `Tebrikler! Tüm farkları buldun 🎉 Toplam skor: ${score}`;
+              document.getElementById("message").className = "message success";
+              document.getElementById("image1Box").onclick = null;
+            }
+          }
+          return;
+        }
+      }
+
+      // Yanlış Tıklama
+      score -= 5;
+      if (score < 0) score = 0;
+      document.getElementById("score").textContent = score;
+      document.getElementById("message").textContent = "Yanlış yer! 😢";
+      document.getElementById("message").className = "message error";
+    }
+
+    // İpucu Al
+    function showHint() {
+      if (!hintUsed && foundDifferences < currentLevel.differences.length) {
+        hintUsed = true;
+        score -= 10;
+        if (score < 0) score = 0;
+        document.getElementById("score").textContent = score;
+        document.getElementById("message").textContent = `İpucu: ${currentLevel.hintText}`;
+        document.getElementById("message").className = "message error";
+      } else if (hintUsed) {
+        document.getElementById("message").textContent = "Daha fazla ipucu kullanamazsın! ❌";
+        document.getElementById("message").className = "message error";
+      } else {
+        document.getElementById("message").textContent = "Tüm farkları zaten buldun! 🎉";
+        document.getElementById("message").className = "message success";
+      }
+    }
+
+    // Sayfa Yüklendiğinde Oyunu Başlat
+    window.onload = startGame;
+  </script>
+  
+  <button onclick="window.location.href='home.html'" class="my-button">
+   Ana sayfaya dön
+ </button>
+ 
+</body>
+</html>

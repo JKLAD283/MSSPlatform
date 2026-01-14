@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MSS WEB SİTESİ - ANA SAYFA</title>
+  <style>
+    /* Genel stil ayarları */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Başlık stili */
+    h1 {
+      color: purple;
+      border-bottom: 2px solid #9c27b0;
+      padding-bottom: 10px;
+      text-align: center;
+    }
+
+    /* Paragraf stilleri */
+    p {
+      color: #333;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    /* Özel başlıklar için stil */
+    .section-title {
+      color: #9c27b0;
+      font-size: 20px;
+      margin-top: 40px;
+      margin-bottom: 20px;
+      font-weight: bold;
+      text-align: left;
+    }
+
+    /* Buton stilleri */
+    button {
+      padding: 10px 20px;
+      background-color: #9c27b0;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-right: 10px;
+      margin-bottom: 20px;
+    }
+    button:hover {
+      background-color: #7b1fa2;
+    }
+    .button-container {
+      text-align: center;
+    }
+
+    /* Gönderi kartları */
+    .post-card {
+      border: 1px solid #eee;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+    .post-card img {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .post-card-content {
+      flex: 1;
+    }
+    .post-card h3 {
+      margin-top: 0;
+      color: #2d3436;
+      font-size: 18px;
+    }
+    .post-card p {
+      margin-bottom: 0;
+      color: #636e72;
+      text-align: left;
+      line-height: 1.5;
+    }
+
+    /* Bağlantı mesajı stili */
+    .connection-message {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.95);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      font-size: 24px;
+      color: #9c27b0;
+      font-weight: bold;
+      /* Başlangıçta görünür, sonra gizlenir */
+      visibility: visible;
+      opacity: 1;
+      transition: visibility 0s, opacity 0.5s ease-out;
+    }
+    /* Mesaj gizlendiğinde */
+    .connection-message.hidden {
+      visibility: hidden;
+      opacity: 0;
+    }
+
+    /* Duyarlı tasarım için */
+    @media (max-width: 600px) {
+      .post-card {
+        flex-direction: column;
+        text-align: center;
+      }
+      .post-card img {
+        width: 100%;
+        height: 200px;
+      }
+      .post-card p {
+        text-align: center;
+      }
+      .connection-message {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Bağlantı Mesajı -->
+  <div id="connectionMsg" class="connection-message">
+    İnternete bağlanılıyor...
+  </div>
+
+  <h1>MSS WEB SİTESİ - ANA SAYFA</h1>
+<button onclick="window.location.href='settings.html'" class="my-button">
+   ⚙️
+ </button>
+  
+  <p>Bugün ne yapmak isterisiniz?</p>
+  <div class="button-container">
+    <button onclick="window.location.href='projectstarted.html'" class="my-button">
+   Proje Yap
+ </button>
+ <button onclick="window.location.href='gonderiler.html'" class="my-button">
+   Gönderilere bak
+ </button>
+ <button onclick="window.location.href='cloud.html'" class="my-button">
+   Buluta git
+ </button>
+ <button onclick="window.location.href='projects.html'" class="my-button">
+   Projelere göz at
+ </button>
+  </div>
+
+  <!-- Gönderiler Bölümü -->
+  <p class="section-title">Bu gönderiler ilginizi çekebilir: </p>
+
+  <!-- Gönderi 1 -->
+  <div class="post-card">
+    <img src="https://picsum.photos/id/0/150/150" alt="HTML ve CSS kod ekranı">
+    <div class="post-card-content">
+      <h3>HTML ve CSS ile Etkileşimli Butonlar Yapımı</h3>
+      <p>Web sitelerinizdeki butonları daha güzel ve etkileşimli hale getirmek için kolay ipuçları. Hover efektleri, geçiş animasyonları ve renk kombinasyonları hakkında bilgiler.</p>
+    </div>
+  </div>
+
+  <!-- Gönderi 2 -->
+  <div class="post-card">
+    <img src="https://picsum.photos/id/180/150/150" alt="Proje planlama panosu">
+    <div class="post-card-content">
+      <h3>Proje Yönetimi İçin İpuçları</h3>
+      <p>Yeni projelerinizi daha düzenli ve hızlı tamamlamak için kullanabileceğiniz yöntemler. Görev bölme, zaman yönetimi ve takip araçları hakkında öneriler.</p>
+    </div>
+  </div>
+
+  <!-- Gönderi 3 -->
+  <div class="post-card">
+    <img src="https://picsum.photos/id/160/150/150" alt="Farklı ekranlarda web sitesi">
+    <div class="post-card-content">
+      <h3>Duyarlı Tasarım Nedir?</h3>
+      <p>Web sitenizin telefon, tablet ve bilgisayar gibi farklı ekranlarda güzel görünmesi için gerekenler. Medya sorguları, esnek ölçüler ve görüntü optimizasyonu konuları.</p>
+    </div>
+  </div>
+
+  <!-- Gönderi 4 -->
+  <div class="post-card">
+    <img src="https://picsum.photos/id/2/150/150" alt="Renk paleti ve tasarım örnekleri">
+    <div class="post-card-content">
+      <h3>Web Tasarımında Renk Kombinasyonları</h3>
+      <p>Doğru renk seçimi ile web sitenizin etkisini artırma. Renk psikolojisi, kontrast kuralları ve popüler palet önerileri.</p>
+    </div>
+  </div>
+
+  <!-- Gönderi 5 -->
+  <div class="post-card">
+    <img src="https://picsum.photos/id/119/150/150" alt="JavaScript kod parçası">
+    <div class="post-card-content">
+      <h3>Basit JavaScript Etkileşimleri</h3>
+      <p>Web sitenize hayat verecek küçük kod parçacıkları. Form doğrulama, menü açma/kapatma ve öğe hareket ettirme gibi uygulamalar.</p>
+    </div>
+  </div>
+
+  <!-- Gönderi 6 -->
+  <div class="post-card">
+    <img src="https://picsum.photos/id/24/150/150" alt="Fotoğraf düzenleme yazılımı">
+    <div class="post-card-content">
+      <h3>Web İçin Görüntü Optimizasyonu</h3>
+      <p>Hızlı yüklenen ve kaliteli görseller hazırlama yöntemleri. Dosya formatları, boyut ayarlama ve sıkıştırma araçları.</p>
+    </div>
+  </div>
+
+  <!-- Gönderi 7 -->
+  <div class="post-card">
+    <img src="https://picsum.photos/id/48/150/150" alt="Font örnekleri ve yazı tipleri">
+    <div class="post-card-content">
+      <h3>Web Yazı Tipleri Seçimi ve Kullanımı</h3>
+      <p>Okunabilir ve estetik yazı tipleri seçme kuralları. Google Fonts gibi kaynaklar ve yazı boyutu ayarlamaları.</p>
+    </div>
+  </div>
+
+  <!-- Gönderi 8 -->
+  <div class="post-card">
+    <img src="https://picsum.photos/id/60/150/150" alt="Form tasarımı örnekleri">
+    <div class="post-card-content">
+      <h3>Kullanıcı Dostu Form Tasarımı</h3>
+      <p>Doldurulması kolay formlar yapma ipuçları. Alan düzenleme, hata mesajları ve doğrulama kuralları hakkında bilgiler.</p>
+    </div>
+  </div>
+
+  <!-- Gönderi 9 -->
+  <div class="post-card">
+    <img src="https://picsum.photos/id/6/150/150" alt="Web sitesi yükleme süresi ölçüm ekranı">
+    <div class="post-card-content">
+      <h3>Web Sitesi Hızını Artırma Yolları</h3>
+      <p>Daha hızlı yüklenen siteler için yapılması gerekenler. Dosya sıkıştırma, önbellekleme ve kod optimizasyonu yöntemleri.</p>
+    </div>
+  </div>
+
+  <!-- Gönderi 10 -->
+  <div class="post-card">
+    <img src="https://picsum.photos/id/96/150/150" alt="Sosyal medya paylaşım düğmeleri">
+    <div class="post-card-content">
+      <h3>Sosyal Medya Entegrasyonu</h3>
+      <p>Web sitenize sosyal medya özellikleri ekleme. Paylaşım düğmeleri, yorum bölümleri ve takip butonları konularında ipuçları.</p>
+    </div>
+  </div>
+
+  <!-- Gönderi 11 -->
+  <div class="post-card">
+    <img src="https://picsum.photos/id/133/150/150" alt="Arama motoru sonuç sayfası">
+    <div class="post-card-content">
+      <h3>Basit SEO Kuralları</h3>
+      <p>Web sitenizin arama motorlarında daha iyi görünmesi için yapılması gerekenler. Meta etiketleri, başlıklar ve içerik optimizasyonu.</p>
+    </div>
+  </div>
+
+  <!-- Gönderi 12 -->
+  <div class="post-card">
+    <img src="https://picsum.photos/id/192/150/150" alt="Erişilebilirlik simgeleri ve örnekleri">
+    <div class="post-card-content">
+      <h3>Web Erişilebilirlik İpuçları</h3>
+      <p>Herkesin kullanabileceği siteler yapma kuralları. Klavye gezintisi, ekran okuyucuları ve kontrast standartları hakkında bilgiler.</p>
+    </div>
+  </div>
+
+  <!-- Gönderi 13 -->
+  <div class="post-card">
+    <img src="https://picsum.photos/id/218/150/150" alt="Kutucuğu tasarımı örnekleri">
+    <div class="post-card-content">
+      <h3>Modern Kart Tasarımları</h3>
+      <p>Görsel açıdan çekici içerik kutuları yapma yöntemleri. Gölgeler, köşe yuvarlaklıkları ve geçiş efektleri kullanımı.</p>
+    </div>
+  </div>
+
+  <!-- Gönderi 14 -->
+  <div class="post-card">
+    <img src="https://picsum.photos/id/239/150/150" alt="Animasyonlu öğeler örneği">
+    <div class="post-card-content">
+      <h3>CSS Animasyonları ile Canlılık Katmak</h3>
+      <p>Web sitenize hareket ekleme teknikleri. Döndürme, kaydırma ve görünme/gizlenme animasyonları hakkında örnekler.</p>
+    </div>
+  </div>
+
+  <!-- Gönderi 15 -->
+  <div class="post-card">
+    <img src="https://picsum.photos/id/250/150/150" alt="Web sitesi test ekranı">
+    <div class="post-card-content">
+      <h3>Web Sitelerini Test Etme Yolları</h3>
+      <p>Sitenizin her yerinde çalıştığından emin olmak için test yöntemleri. Farklı tarayıcılar ve ekran boyutları için kontrol kuralları.</p>
+    </div>
+  </div>
+  
+  <!-- Gönderi 16 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/76/150/150" alt="JavaScript oyun ekranı">
+  <div class="post-card-content">
+    <h3>JavaScript ile Basit Oyun Yapımı</h3>
+    <p>Kendi oyununuzu yapmak için temel JavaScript komutları ve uygulama örnekleri. Hareket eden karakterler, skor sistemi ve çarpışma kontrolü hakkında bilgiler.</p>
+  </div>
+</div>
+
+<!-- Gönderi 17 -->
+ <div class="post-card">
+   <img src="https://picsum.photos/id/87/150/150" alt="Veri tabanı tasarımı">
+   <div class="post-card-content">
+     <h3>Basit Veri Tabanı Tasarımı</h3>
+     <p>Web siteniz için gerekli verileri düzenleme ve saklama yöntemleri.</p>
+   </div>
+ </div>
+ <!-- Gönderi 18 -->
+ <div class="post-card">
+   <img src="https://picsum.photos/id/92/150/150" alt="Mobil uygulama tasarımı">
+   <div class="post-card-content">
+     <h3>Mobil Uygulama Tasarım İpuçları</h3>
+     <p>Kullanıcı dostu mobil arayüzler oluşturmak için temel kurallar.</p>
+   </div>
+ </div>
+ <!-- Gönderi 19 -->
+ <div class="post-card">
+   <img src="https://picsum.photos/id/100/150/150" alt="Veri görselleştirme örneği">
+   <div class="post-card-content">
+     <h3>Veri Görselleştirme Araçları</h3>
+     <p>Verileri anlaşılır grafiklerle sunmak için kullanabileceğiniz araçlar.</p>
+   </div>
+ </div>
+ <!-- Gönderi 20 -->
+ <div class="post-card">
+   <img src="https://picsum.photos/id/110/150/150" alt="Web güvenliği örnekleri">
+   <div class="post-card-content">
+     <h3>Web Siteleri İçin Güvenlik Önlemleri</h3>
+     <p>Sitenizi ve kullanıcı verilerinizi korumak için yapılması gerekenler.</p>
+   </div>
+ </div>
+ <!-- Gönderi 21 -->
+ <div class="post-card">
+   <img src="https://picsum.photos/id/122/150/150" alt="Video düzenleme yazılımı">
+   <div class="post-card-content">
+     <h3>Web İçin Video Hazırlama</h3>
+     <p>Hızlı yüklenen ve kaliteli videolar hazırlama yöntemleri.</p>
+   </div>
+ </div>
+ <!-- Gönderi 22 -->
+ <div class="post-card">
+   <img src="https://picsum.photos/id/135/150/150" alt="Blog yazımı örnekleri">
+   <div class="post-card-content">
+     <h3>Etkili Blog Yazısı Yazma</h3>
+     <p>Okuyucularınızı çekmek için içerik oluşturma kuralları.</p>
+   </div>
+ </div>
+ 
+ <!-- Gönderi 24 -->
+ <div class="post-card">
+   <img src="https://picsum.photos/id/155/150/150" alt="Bulut depolama örneği">
+   <div class="post-card-content">
+     <h3>Bulut Depolama Kullanımı</h3>
+     <p>Proje dosyalarınızı güvenli bir şekilde saklama ve paylaşma.</p>
+   </div>
+ </div>
+ <!-- Gönderi 25 -->
+ <div class="post-card">
+   <img src="https://picsum.photos/id/168/150/150" alt="Çevrimiçi işbirliği aracı">
+   <div class="post-card-content">
+     <h3>Takım Çalışması İçin Araçlar</h3>
+     <p>Uzaktan çalışırken projeyi yönetmek için kullanabileceğiniz araçlar.</p>
+   </div>
+ </div>
+
+<!-- Gönderi 26 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/172/150/150" alt="3D tasarım yazılımı">
+  <div class="post-card-content">
+    <h3>Basit 3D Tasarım Kavramları</h3>
+    <p>Web ve uygulamalar için 3D öğeler hazırlama temelleri.</p>
+  </div>
+</div>
+
+<!-- Gönderi 27 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/185/150/150" alt="Ses düzenleme aracı">
+  <div class="post-card-content">
+    <h3>Web İçin Ses Dosyaları Hazırlama</h3>
+    <p>Kaliteli ve küçük boyutlu ses dosyaları oluşturma yöntemleri.</p>
+  </div>
+</div>
+
+<!-- Gönderi 28 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/198/150/150" alt="Analiz raporu ekranı">
+  <div class="post-card-content">
+    <h3>Web Sitesi Performans Analizi</h3>
+    <p>Sitenizin verimliliğini ölçme ve iyileştirme araçları.</p>
+  </div>
+</div>
+
+<!-- Gönderi 29 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/202/150/150" alt="Kullanıcı araştırması örnekleri">
+  <div class="post-card-content">
+    <h3>Kullanıcı İhtiyaçlarını Anlama</h3>
+    <p>İhtiyaçlarınıza uygun içerikler oluşturmak için araştırma yöntemleri.</p>
+  </div>
+</div>
+
+<!-- Gönderi 30 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/210/150/150" alt="Kod paylaşım platformu">
+  <div class="post-card-content">
+    <h3>Çevrimiçi Kod Paylaşım Araçları</h3>
+    <p>Takımla kod paylaşmak ve birlikte çalışmak için araçlar.</p>
+  </div>
+</div>
+
+<!-- Gönderi 31 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/225/150/150" alt="Mobil tarayıcı testi">
+  <div class="post-card-content">
+    <h3>Mobil Tarayıcı Uyumluluğu</h3>
+    <p>Sitenizin tüm mobil tarayıcılarda çalışması için kontrol noktaları.</p>
+  </div>
+</div>
+
+<!-- Gönderi 32 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/233/150/150" alt="QR kod oluşturma aracı">
+  <div class="post-card-content">
+    <h3>Web İçin QR Kod Kullanımı</h3>
+    <p>Kullanıcıların kolayca erişmesi için QR kod oluşturma ve entegrasyonu.</p>
+  </div>
+</div>
+
+<!-- Gönderi 33 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/244/150/150" alt="Hızlı erişim menüsü">
+  <div class="post-card-content">
+    <h3>Kullanıcı Dostu Menü Tasarımı</h3>
+    <p>Sitenin gezinmesini kolaylaştıran menü yapıları.</p>
+  </div>
+</div>
+
+<!-- Gönderi 34 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/255/150/150" alt="Görüntü tanıma örneği">
+  <div class="post-card-content">
+    <h3>Basit Yapay Zeka Uygulamaları</h3>
+    <p>Web sitenize ekleyebileceğiniz basit yapay zeka özellikleri.</p>
+  </div>
+</div>
+
+<!-- Gönderi 35 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/267/150/150" alt="Dosya dönüştürme aracı">
+  <div class="post-card-content">
+    <h3>Dosya Format Dönüştürme Araçları</h3>
+    <p>Farklı dosya türlerini birbirine çevirmek için kullanabileceğiniz araçlar.</p>
+  </div>
+</div>
+
+<!-- Gönderi 36 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/278/150/150" alt="Haftalık planlama tablosu">
+  <div class="post-card-content">
+    <h3>Proje İçin Zaman Planlama</h3>
+    <p>Projenizi zamanında tamamlamak için etkili planlama yöntemleri.</p>
+  </div>
+</div>
+
+<!-- Gönderi 37 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/289/150/150" alt="Müşteri geri bildirimi formu">
+  <div class="post-card-content">
+    <h3>Müşteri Geri Bildirimi Alma Yolları</h3>
+    <p>Sitenizi geliştirmek için geri bildirim toplama yöntemleri.</p>
+  </div>
+</div>
+
+<!-- Gönderi 38 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/295/150/150" alt="Klavye kısayolları örnekleri">
+  <div class="post-card-content">
+    <h3>Çalışma Hızınızı Artıran Kısayollar</h3>
+    <p>Kodlama ve tasarım sırasında zaman kazandıran klavye kısayolları.</p>
+  </div>
+</div>
+
+<!-- Gönderi 39 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/302/150/150" alt="Bulut barındırma platformu">
+  <div class="post-card-content">
+    <h3>Web Sitesini İnternete Yükleme</h3>
+    <p>Sitenizi herkese açık hale getirmek için barındırma seçenekleri.</p>
+  </div>
+</div>
+
+<!-- Gönderi 40 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/316/150/150" alt="Renk körlüğü simülasyonu">
+  <div class="post-card-content">
+    <h3>Renk Körlüğü Duyarlı Tasarım</h3>
+    <p>Tüm kullanıcıların anlayabileceği renk kombinasyonları seçme.</p>
+  </div>
+</div>
+
+<!-- Gönderi 41 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/328/150/150" alt="Otomatik yanıt sistemi">
+  <div class="post-card-content">
+    <h3>Basit Sohbet Botu Oluşturma</h3>
+    <p>Sitenize ekleyebileceğiniz temel otomatik yanıt sistemleri.</p>
+  </div>
+</div>
+
+<!-- Gönderi 42 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/339/150/150" alt="Veri yedekleme ekranı">
+  <div class="post-card-content">
+    <h3>Proje Dosyalarını Yedekleme</h3>
+    <p>Veri kaybını önlemek için güvenli yedekleme yöntemleri.</p>
+  </div>
+</div>
+
+<!-- Gönderi 43 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/352/150/150" alt="Kullanıcı profili sayfası">
+  <div class="post-card-content">
+    <h3>Kullanıcı Profili Tasarımı</h3>
+    <p>Kullanıcıların bilgilerini yönetebileceği profili sayfaları tasarlama.</p>
+  </div>
+</div>
+
+<!-- Gönderi 44 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/366/150/150" alt="İstatistik grafikleri">
+  <div class="post-card-content">
+    <h3>Site İstatistiklerini Takip Etme</h3>
+    <p>Kaç kişi ziyaret ettiğini ve ne yaptığını görmek için araçlar.</p>
+  </div>
+</div>
+
+<!-- Gönderi 45 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/379/150/150" alt="Kod düzenleme yazılımı">
+  <div class="post-card-content">
+    <h3>Verimli Kod Yazma İpuçları</h3>
+    <p>Hızlı, temiz ve anlaşılır kod yazmak için kurallar.</p>
+  </div>
+</div>
+
+<!-- Gönderi 46 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/385/150/150" alt="Mobil oyun ekranı">
+  <div class="post-card-content">
+    <h3>Mobil Oyun Geliştirme Temelleri</h3>
+    <p>Tüm cihazlarda çalışan basit mobil oyunlar oluşturma.</p>
+  </div>
+</div>
+
+<!-- Gönderi 47 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/398/150/150" alt="Harita entegrasyonu">
+  <div class="post-card-content">
+    <h3>Web'e Harita Entegrasyonu</h3>
+    <p>Sitenize konum bilgisi eklemek için harita araçları.</p>
+  </div>
+</div>
+
+<!-- Gönderi 48 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/405/150/150" alt="Dil seçimi menüsü">
+  <div class="post-card-content">
+    <h3>Çok Dilli Web Sitesi Yapımı</h3>
+    <p>Farklı dillerde içerik sunmak için yöntemler.</p>
+  </div>
+</div>
+
+<!-- Gönderi 49 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/412/150/150" alt="Dosya yükleme formu">
+  <div class="post-card-content">
+    <h3>Kullanıcı Dosya Yükleme Sistemi</h3>
+    <p>Güvenli bir şekilde dosya yükleme özelliği ekleme.</p>
+  </div>
+</div>
+
+<!-- Gönderi 50 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/426/150/150" alt="Anket tasarımı">
+  <div class="post-card-content">
+    <h3>Etkili Anket ve Soruşturma Yapımı</h3>
+    <p>Veri toplamak için kullanıcı dostu anketler oluşturma.</p>
+  </div>
+</div>
+
+<!-- Gönderi 52 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/449/150/150" alt="Hata ayıklama ekranı">
+  <div class="post-card-content">
+    <h3>Koddaki Hataları Bulma ve Düzeltme</h3>
+    <p>Hızlı hata ayıklama için kullanabileceğiniz yöntemler.</p>
+  </div>
+</div>
+
+<!-- Gönderi 54 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/475/150/150" alt="Görüntü düzenleme aracı">
+  <div class="post-card-content">
+    <h3>Web İçin Görüntü Düzenleme</h3>
+    <p>Profesyonel görseller hazırlamak için temel düzenleme teknikleri.</p>
+  </div>
+</div>
+
+<!-- Gönderi 55 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/488/150/150" alt="Anlık bildirim örneği">
+  <div class="post-card-content">
+    <h3>Anlık Bildirim Sistemi Yapımı</h3>
+    <p>Kullanıcıları bilgilendirmek için bildirim özellikleri ekleme.</p>
+  </div>
+</div>
+
+<!-- Gönderi 56 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/496/150/150" alt="E-ticaret ürün sayfası">
+  <div class="post-card-content">
+    <h3>Basit E-Ticaret Sayfası Tasarımı</h3>
+    <p>Ürünleri sergileyen ve satış yapan sayfalar oluşturma.</p>
+  </div>
+</div>
+
+<!-- Gönderi 57 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/508/150/150" alt="Kod şablonu örnekleri">
+  <div class="post-card-content">
+    <h3>Kullanışlı Kod Şablonları Kullanma</h3>
+    <p>Zaman kazanmak için hazır kod parçacıkları kullanma.</p>
+  </div>
+</div>
+
+<!-- Gönderi 58 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/519/150/150" alt="Görsel arama motoru">
+  <div class="post-card-content">
+    <h3>Görsel SEO İpuçları</h3>
+    <p>Görsellerinizin arama motorlarında görünmesi için ayarlar.</p>
+  </div>
+</div>
+
+<!-- Gönderi 59 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/532/150/150" alt="Konsol komutları">
+  <div class="post-card-content">
+    <h3>Temel Komut Satırı Kullanımı</h3>
+    <p>Hızlı işlemler yapmak için konsol komutları öğrenme.</p>
+  </div>
+</div>
+
+<!-- Gönderi 60 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/545/150/150" alt="Yorum bölümü örnekleri">
+  <div class="post-card-content">
+    <h3>Kullanıcı Yorum Sistemi Yapımı</h3>
+    <p>Sitenize etkileşimli yorum bölümleri ekleme.</p>
+  </div>
+</div>
+
+<!-- Gönderi 61 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/558/150/150" alt="Takvim entegrasyonu">
+  <div class="post-card-content">
+    <h3>Web Takvim Uygulaması</h3>
+    <p>Etkinlikleri yönetmek için takvim özellikleri ekleme.</p>
+  </div>
+</div>
+
+<!-- Gönderi 62 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/569/150/150" alt="Kod paylaşım forumu">
+  <div class="post-card-content">
+    <h3>Web Geliştirme Toplulukları</h3>
+    <p>Bilgi alışverişi yapabileceğiniz geliştirici toplulukları.</p>
+  </div>
+</div>
+
+<!-- Gönderi 63 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/582/150/150" alt="Görüntü yükleme hızı ölçümü">
+  <div class="post-card-content">
+    <h3>Görüntü Yükleme Hızını Artırma</h3>
+    <p>Sitenin daha hızlı açılması için görselleri optimize etme.</p>
+  </div>
+</div>
+
+<!-- Gönderi 65 -->
+<div class="post-card">
+  <img src="https://picsum.photos/id/608/150/150" alt="Proje sunum tasarımı">
+  <div class="post-card-content">
+    <h3>Proje Sunumu Hazırlama</h3>
+    <p>Çalışmalarınızı etkili bir şekilde gösterme yöntemleri.</p>
+  </div>
+</div>
+
+
+  <!-- Projeler Bölümü -->
+  <p class="section-title">Bu projeler ilginizi çekebilir: </p>
+  <button onclick="window.location.href='matematik-oyunu.html'" class="my-button">
+   Matematik Oyunu
+ </button>
+ 
+ <button onclick="window.location.href='kodlama-ogren.html'" class="my-button">
+   Kodlama öğren
+ </button>
+
+<button onclick="window.location.href='bulmaca-oyunu.html'" class="my-button">
+   Bulmaca Oyunu
+ </button>
+
+<button onclick="window.location.href='farklari-bul.html'" class="my-button">
+   Farkları Bul
+ </button>
+ 
+ <button onclick="window.location.href='kelime-kartlari.html'" class="my-button">
+   Kelime Kartları
+ </button>
+
+<button onclick="window.location.href='hiz-testi.html'" class="my-button">
+   Klavye Hız Testi
+ </button>
+
+<button onclick="window.location.href='anlami-kelime.html'" class="my-button">
+   Anlamlı Kelime Oyunu
+ </button>
+
+<button onclick="window.location.href='bagimli-kelime-oyunu.html'" class="my-button">
+   Bağımlı Kelime Oyunu
+ </button>
+
+<button onclick="window.location.href='index.html'" class="my-button">
+   OTURUMU KAPAT
+</button>
+
+  <!-- Mesajı gizlemek için JavaScript -->
+  <script>
+    // Sayfa yüklendikten 5 saniye sonra mesajı gizle
+    window.onload = function() {
+      setTimeout(function() {
+        document.getElementById('connectionMsg').classList.add('hidden');
+      }, 5000); // 5000 milisaniye = 5 saniye
+    }
+  </script>
+  <script src="theme.js"></script>
+
+</body>
+</html>

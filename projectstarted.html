@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MSS WEB SİTESİ - KENDİ HTML PROJEM</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f9f3fc;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+    }
+    h1 {
+      grid-column: 1 / -1;
+      color: #9c27b0;
+      text-align: center;
+      border-bottom: 3px solid #9c27b0;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+    .editor-area, .preview-area {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(156,39,176,0.2);
+      padding: 25px;
+    }
+    h2 {
+      color: #9c27b0;
+      margin-top: 0;
+    }
+    textarea {
+      width: 100%;
+      height: 300px;
+      padding: 15px;
+      border: 2px solid #9c27b0;
+      border-radius: 10px;
+      font-family: monospace;
+      font-size: 14px;
+      resize: vertical;
+      box-sizing: border-box;
+    }
+    #previewFrame {
+      width: 100%;
+      height: 300px;
+      border: 2px solid #9c27b0;
+      border-radius: 10px;
+      background: white;
+    }
+    .controls-area {
+      grid-column: 1 / -1;
+      text-align: center;
+      margin-top: 20px;
+    }
+    .project-list {
+      grid-column: 1 / -1;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(156,39,176,0.2);
+      padding: 25px;
+      margin-top: 20px;
+    }
+    .project-item {
+      padding: 15px;
+      background: #f3e5f5;
+      border-radius: 10px;
+      margin: 10px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .project-name {
+      font-size: 18px;
+      color: #4a148c;
+      font-weight: bold;
+    }
+    .btn {
+      padding: 8px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 0 5px;
+    }
+    .save-btn { background: #9c27b0; color: white; }
+    .save-btn:hover { background: #7b1fa2; }
+    .preview-btn { background: #2e7d32; color: white; }
+    .preview-btn:hover { background: #1b5e20; }
+    .load-btn { background: #1976d2; color: white; }
+    .load-btn:hover { background: #0d47a1; }
+    .delete-btn { background: #c62828; color: white; }
+    .delete-btn:hover { background: #b71c1c; }
+    .input-group {
+      margin: 15px 0;
+    }
+    input[type="text"] {
+      padding: 10px;
+      border: 2px solid #9c27b0;
+      border-radius: 8px;
+      font-size: 16px;
+      width: 300px;
+      margin-right: 10px;
+    }
+    .message {
+      grid-column: 1 / -1;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .success { color: #2e7d32; }
+    .error { color: #c62828; }
+  </style>
+</head>
+<body>
+  <h1>MSS WEB SİTESİ - KENDİ HTML PROJEMİ YAP</h1>
+
+  <!-- Editör Alanı -->
+  <div class="editor-area">
+    <h2>HTML Editörü</h2>
+    <textarea id="htmlEditor" placeholder="Buraya HTML kodunu yazın...">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;title&gt;Benim Projem&lt;/title&gt;
+  &lt;style&gt;
+    body { background: #f9f3fc; text-align: center; padding-top: 50px; }
+    h1 { color: #9c27b0; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Merhaba, Benim HTML Projem!&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+    </textarea>
+  </div>
+
+  <!-- Önizleme Alanı -->
+  <div class="preview-area">
+    <h2>Önizleme</h2>
+    <iframe id="previewFrame"></iframe>
+  </div>
+
+  <!-- Kontroller Alanı -->
+  <div class="controls-area">
+    <div class="input-group">
+      <input type="text" id="projectName" placeholder="Proje Adı (örn: Benim Sayfam)">
+      <button class="btn save-btn" onclick="saveProject()">Projeyi Kaydet</button>
+      <button class="btn preview-btn" onclick="updatePreview()">Önizlemeyi Güncelle</button>
+    </div>
+    <div id="message" class="message"></div>
+  </div>
+
+  <!-- Kayıtlı Projeler Listesi -->
+  <div class="project-list">
+    <h2>Kayıtlı Projeler</h2>
+    <div id="projectsContainer"></div>
+  </div>
+
+  <script>
+    // Sayfa Yüklendiğinde Önizlemeyi Güncelle ve Projeleri Yükle
+    window.onload = () => {
+      updatePreview();
+      loadAllProjects();
+    };
+
+    // Önizlemeyi Güncelle
+    function updatePreview() {
+      const htmlCode = document.getElementById("htmlEditor").value;
+      const previewFrame = document.getElementById("previewFrame");
+      
+      previewFrame.srcdoc = htmlCode;
+      
+      document.getElementById("message").textContent = "Önizleme güncellendi ✨";
+      document.getElementById("message").className = "message success";
+      
+      // 3 saniye sonra mesajı temizle
+      setTimeout(() => {
+        document.getElementById("message").textContent = "";
+      }, 3000);
+    }
+
+    // Projeyi Kaydet (LocalStorage'a)
+    function saveProject() {
+      const projectName = document.getElementById("projectName").value.trim();
+      const htmlCode = document.getElementById("htmlEditor").value.trim();
+      
+      if (!projectName) {
+        document.getElementById("message").textContent = "Lütfen proje adı girin!";
+        document.getElementById("message").className = "message error";
+        return;
+      }
+      
+      if (!htmlCode) {
+        document.getElementById("message").textContent = "HTML kodu boş olamaz!";
+        document.getElementById("message").className = "message error";
+        return;
+      }
+      
+      // Proje verisini hazırla
+      const project = {
+        id: Date.now().toString(), // Benzersiz ID oluştur
+        name: projectName,
+        code: htmlCode,
+        date: new Date().toLocaleString("tr-TR")
+      };
+      
+      // Mevcut projeleri al
+      let projects = JSON.parse(localStorage.getItem("htmlProjects")) || [];
+      
+      // Aynı isimde proje varsa sor
+      const existingProject = projects.find(p => p.name.toLowerCase() === projectName.toLowerCase());
+      if (existingProject) {
+        if (!confirm(`${projectName} adlı proje zaten var! Üzerine yazmak istiyor musun?`)) {
+          return;
+        }
+        // Var olan projeyi sil
+        projects = projects.filter(p => p.id !== existingProject.id);
+      }
+      
+      // Yeni projeyi ekle
+      projects.push(project);
+      
+      // LocalStorage'a kaydet
+      localStorage.setItem("htmlProjects", JSON.stringify(projects));
+      
+      // Arayüzü Güncelle
+      document.getElementById("projectName").value = "";
+      document.getElementById("message").textContent = `${projectName} başarıyla kaydedildi 🎉`;
+      document.getElementById("message").className = "message success";
+      loadAllProjects();
+      
+      setTimeout(() => {
+        document.getElementById("message").textContent = "";
+      }, 3000);
+    }
+
+    // Tüm Projeleri Yükle
+    function loadAllProjects() {
+      const projects = JSON.parse(localStorage.getItem("htmlProjects")) || [];
+      const container = document.getElementById("projectsContainer");
+      
+      if (projects.length === 0) {
+        container.innerHTML = "<p style='color:#666; text-align:center;'>Henüz kayıtlı proje yok! Yukarıdan bir proje oluştur ve kaydet.</p>";
+        return;
+      }
+      
+      // Projeleri listele
+      container.innerHTML = "";
+      projects.forEach(project => {
+        const item = document.createElement("div");
+        item.className = "project-item";
+        
+        item.innerHTML = `
+          <div>
+            <div class="project-name">${project.name}</div>
+            <div style="color:#666; font-size:14px;">Kaydedildi: ${project.date}</div>
+          </div>
+          <div>
+            <button class="btn load-btn" onclick="loadProject('${project.id}')">Yükle</button>
+            <button class="btn delete-btn" onclick="deleteProject('${project.id}', '${project.name}')">Sil</button>
+          </div>
+        `;
+        
+        container.appendChild(item);
+      });
+    }
+
+    // Projeyi Yükle
+    function loadProject(projectId) {
+      const projects = JSON.parse(localStorage.getItem("htmlProjects")) || [];
+      const project = projects.find(p => p.id === projectId);
+      
+      if (project) {
+        document.getElementById("projectName").value = project.name;
+        document.getElementById("htmlEditor").value = project.code;
+        updatePreview();
+        
+        document.getElementById("message").textContent = `${project.name} yüklendi ✨`;
+        document.getElementById("message").className = "message success";
+        
+        setTimeout(() => {
+          document.getElementById("message").textContent = "";
+        }, 3000);
+      }
+    }
+
+    // Projeyi Sil
+    function deleteProject(projectId, projectName) {
+      if (!confirm(`${projectName} adlı projeyi silmek istediğinize emin misiniz?`)) {
+        return;
+      }
+      
+      let projects = JSON.parse(localStorage.getItem("htmlProjects")) || [];
+      projects = projects.filter(p => p.id !== projectId);
+      
+      localStorage.setItem("htmlProjects", JSON.stringify(projects));
+      
+      document.getElementById("message").textContent = `${projectName} silindi 🗑️`;
+      document.getElementById("message").className = "message error";
+      loadAllProjects();
+      
+      setTimeout(() => {
+        document.getElementById("message").textContent = "";
+      }, 3000);
+    }
+  </script>
+  <button onclick="window.location.href='home.html'" class="my-button">
+   Ana sayfaya dön
+ </button>
+ 
+</body>
+</html>

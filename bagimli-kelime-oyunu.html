@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MSS WEB SİTESİ - BAĞIMLI KELİME OYUNU</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f9f3fc;
+    }
+    h1 {
+      color: #9c27b0;
+      text-align: center;
+      border-bottom: 3px solid #9c27b0;
+      padding-bottom: 10px;
+    }
+    .game-container {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(156,39,176,0.2);
+      padding: 30px;
+      text-align: center;
+    }
+    .puzzle-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 40px);
+      gap: 5px;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    .grid-cell {
+      width: 40px;
+      height: 40px;
+      background: #f3e5f5;
+      border: 2px solid #9c27b0;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: bold;
+      color: #4a148c;
+      cursor: pointer;
+      user-select: none;
+    }
+    .grid-cell.selected {
+      background: #9c27b0;
+      color: white;
+    }
+    .grid-cell.found {
+      background: #2e7d32;
+      color: white;
+      border-color: #2e7d32;
+    }
+    .words-to-find {
+      text-align: left;
+      max-width: 400px;
+      margin: 20px auto;
+      padding: 15px;
+      background: #f3e5f5;
+      border-radius: 10px;
+    }
+    .words-to-find h3 {
+      color: #9c27b0;
+      margin-top: 0;
+    }
+    .word-item {
+      font-size: 18px;
+      color: #4a148c;
+      margin: 8px 0;
+      padding-left: 5px;
+      border-left: 3px solid #9c27b0;
+    }
+    .word-item.found {
+      text-decoration: line-through;
+      color: #666;
+      border-left-color: #2e7d32;
+    }
+    .game-btn {
+      padding: 10px 25px;
+      font-size: 18px;
+      background: #9c27b0;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    .game-btn:hover {
+      background: #7b1fa2;
+    }
+    .message {
+      font-size: 22px;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+    .success { color: #2e7d32; }
+    .error { color: #c62828; }
+  </style>
+</head>
+<body>
+  <h1>MSS WEB SİTESİ - BAĞIMLI KELİME OYUNU</h1>
+
+  <div class="game-container">
+    <div class="puzzle-grid" id="puzzleGrid"></div>
+
+    <div class="words-to-find">
+      <h3>BULUNACAK KELİMELER:</h3>
+      <div class="word-item" id="w1">BİLGİSAYAR</div>
+      <div class="word-item" id="w2">PROGRAMLAMA</div>
+      <div class="word-item" id="w3">HTML</div>
+      <div class="word-item" id="w4">CSS</div>
+      <div class="word-item" id="w5">JAVA</div>
+    </div>
+
+    <button class="game-btn" onclick="startGame()">Yeni Oyun</button>
+    <button class="game-btn" onclick="clearSelection()">Seçimi Temizle</button>
+    <div id="message" class="message"></div>
+  </div>
+
+  <script>
+    // Bulmaca Haritaları ve Kelime Bilgileri
+    const puzzles = [
+      {
+        grid: [
+          ['B','İ','L','G','İ','S','A','Y'],
+          ['R','A','P','R','O','G','R','A'],
+          ['T','M','L','M','A','T','L','M'],
+          ['H','T','M','L','S','S','C','S'],
+          ['J','A','V','A','C','S','S','D'],
+          ['K','B','U','T','O','L','A','S'],
+          ['O','Y','U','N','L','A','R','I'],
+          ['D','E','S','T','E','K','I','M']
+        ],
+        words: [
+          { name: "BİLGİSAYAR", id: "w1", positions: [[0,0],[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7]] },
+          { name: "PROGRAMLAMA", id: "w2", positions: [[1,3],[1,4],[1,5],[1,6],[1,7],[2,7],[3,7],[4,7],[5,7],[6,7]] },
+          { name: "HTML", id: "w3", positions: [[3,0],[3,1],[3,2],[3,3]] },
+          { name: "CSS", id: "w4", positions: [[3,6],[4,6],[5,6]] },
+          { name: "JAVA", id: "w5", positions: [[4,0],[4,1],[4,2],[4,3]] }
+        ]
+      },
+      {
+        grid: [
+          ['S','P','O','R','T','V','E','Y'],
+          ['E','F','U','T','B','O','L','A'],
+          ['V','B','A','S','K','E','T','B'],
+          ['I','A','T','E','N','I','S','A'],
+          ['M','L','E','V','O','L','E','L'],
+          ['A','K','R','E','S','İ','M','E'],
+          ['T','E','G','İ','R','I','L','R'],
+          ['I','S','W','A','T','E','R','P']
+        ],
+        words: [
+          { name: "SPOR", id: "w1", positions: [[0,0],[0,1],[0,2],[0,3]] },
+          { name: "FUTBOL", id: "w2", positions: [[1,2],[1,3],[1,4],[1,5],[1,6],[1,7]] },
+          { name: "BASKET", id: "w3", positions: [[2,1],[2,2],[2,3],[2,4],[2,5],[2,6]] },
+          { name: "TENİS", id: "w4", positions: [[3,2],[3,3],[3,4],[3,5],[3,6]] },
+          { name: "VOLEYBOL", id: "w5", positions: [[4,3],[4,4],[4,5],[4,6],[4,7],[5,7],[6,7],[7,7]] }
+        ]
+      }
+    ];
+
+    let currentPuzzle, selectedCells = [], foundWords = 0, currentPuzzleIndex = 0;
+
+    // Oyunu Başlat
+    function startGame() {
+      currentPuzzleIndex = Math.floor(Math.random() * puzzles.length);
+      currentPuzzle = puzzles[currentPuzzleIndex];
+      selectedCells = [];
+      foundWords = 0;
+      document.getElementById("message").textContent = "";
+      
+      // Kelime listesini sıfırla
+      document.querySelectorAll(".word-item").forEach(item => {
+        item.classList.remove("found");
+      });
+
+      // Gridi oluştur
+      const gridElement = document.getElementById("puzzleGrid");
+      gridElement.innerHTML = "";
+      
+      for (let row = 0; row < currentPuzzle.grid.length; row++) {
+        for (let col = 0; col < currentPuzzle.grid[row].length; col++) {
+          const cell = document.createElement("div");
+          cell.className = "grid-cell";
+          cell.textContent = currentPuzzle.grid[row][col];
+          cell.dataset.row = row;
+          cell.dataset.col = col;
+          cell.onclick = () => selectCell(cell, row, col);
+          gridElement.appendChild(cell);
+        }
+      }
+    }
+
+    // Hücre Seç
+    function selectCell(cell, row, col) {
+      // Eğer kelime zaten bulunmuşsa işlem yapma
+      if (cell.classList.contains("found")) return;
+
+      // Eğer zaten seçilmişse kaldır
+      if (cell.classList.contains("selected")) {
+        cell.classList.remove("selected");
+        selectedCells = selectedCells.filter(c => c.row !== row || c.col !== col);
+        return;
+      }
+
+      // En fazla 10 hücre seçilebilir
+      if (selectedCells.length >= 10) {
+        document.getElementById("message").textContent = "En fazla 10 hücre seçebilirsin!";
+        document.getElementById("message").className = "message error";
+        return;
+      }
+
+      cell.classList.add("selected");
+      selectedCells.push({ row, col, element: cell });
+      document.getElementById("message").textContent = "";
+      
+      // Kelime kontrolü
+      checkSelectedWord();
+    }
+
+    // Seçili Kelimeyi Kontrol Et
+    function checkSelectedWord() {
+      for (const word of currentPuzzle.words) {
+        // Seçilen hücre sayısı kelimenin harf sayısıyla eşleşmiyorsa atla
+        if (selectedCells.length !== word.positions.length) continue;
+        
+        let match = true;
+        // Pozisyonları kontrol et
+        for (let i = 0; i < selectedCells.length; i++) {
+          const sc = selectedCells[i];
+          const wp = word.positions[i];
+          if (sc.row !== wp[0] || sc.col !== wp[1]) {
+            match = false;
+            break;
+          }
+        }
+
+        if (match) {
+          foundWords++;
+          // Kelimeyi işaretle
+          document.getElementById(word.id).classList.add("found");
+          document.getElementById("message").textContent = `Harika! "${word.name}" buldun ✨`;
+          document.getElementById("message").className = "message success";
+          
+          // Seçili hücreleri sabitle
+          selectedCells.forEach(sc => {
+            sc.element.classList.remove("selected");
+            sc.element.classList.add("found");
+            sc.element.onclick = null;
+          });
+          
+          selectedCells = [];
+
+          // Tüm kelimeler bulundu mu?
+          if (foundWords === currentPuzzle.words.length) {
+            setTimeout(() => {
+              document.getElementById("message").textContent = `Tebrikler! Tüm kelimeleri buldun 🎉 Yeni oyun için butona tıkla!`;
+            }, 1000);
+          }
+          return;
+        }
+      }
+    }
+
+    // Seçimi Temizle
+    function clearSelection() {
+      selectedCells.forEach(sc => {
+        sc.element.classList.remove("selected");
+      });
+      selectedCells = [];
+      document.getElementById("message").textContent = "Seçim temizlendi!";
+      document.getElementById("message").className = "message error";
+    }
+
+    // Sayfa Yüklendiğinde Oyunu Başlat
+    window.onload = startGame;
+  </script>
+  <button onclick="window.location.href='home.html'" class="my-button">
+   Ana sayfaya dön
+ </button>
+ 
+</body>
+</html>

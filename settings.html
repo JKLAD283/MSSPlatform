@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<head>
+  <link rel="stylesheet" href="styles.css">
+  <title>MSS WEB SİTESİ - AYARLAR</title>
+  <style>
+    /* Temel stil ayarları */
+    body {
+      transition: background-color 0.3s, color 0.3s;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Beyaz mod */
+    .light-mode {
+      background-color: #ffffff;
+      color: #000000;
+    }
+
+    /* Siyah mod */
+    .dark-mode {
+      background-color: #1a1a1a;
+      color: #ffffff;
+    }
+
+    .mode-selector {
+      padding: 10px 15px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
+
+    .my-button {
+      padding: 10px 15px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      margin-top: 20px;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body class="light-mode">
+  <h2>Gorunum Ayarlari</h2>
+  <label for="mode">Tema Seciniz:</label>
+  <select id="mode" class="mode-selector">
+    <option value="light">Beyaz Mod</option>
+    <option value="dark">Siyah Mod</option>
+  </select>
+
+  <!-- Premium butonu alanı -->
+  <div id="premiumButtonContainer">
+    <button onclick="togglePremium()" class="my-button">
+      Premium moda gec
+    </button>
+  </div>
+
+  <button onclick="window.location.href='home.html'" class="my-button">
+    Ana sayfaya don
+  </button>
+
+  <script>
+    const modeSelector = document.getElementById('mode');
+    const body = document.body;
+    const premiumButtonContainer = document.getElementById('premiumButtonContainer');
+
+    // Sayfa yüklendiğinde kayıtlı temayı ve premium durumunu uygula
+    window.addEventListener('load', () => {
+      // Tema ayarları
+      const savedMode = localStorage.getItem('themeMode') || 'light';
+      body.className = savedMode + '-mode';
+      modeSelector.value = savedMode;
+
+      // Premium durumu kontrolü
+      const isPremium = localStorage.getItem('isPremium') === 'true';
+      updatePremiumButton(isPremium);
+    });
+
+    // Tema değişikliğini işle
+    modeSelector.addEventListener('change', (e) => {
+      const selectedMode = e.target.value;
+      body.className = selectedMode + '-mode';
+      localStorage.setItem('themeMode', selectedMode);
+    });
+
+    // Premium modunu aç/kapat işlevi
+    function togglePremium() {
+      const currentIsPremium = localStorage.getItem('isPremium') === 'true';
+      const newIsPremium = !currentIsPremium;
+      localStorage.setItem('isPremium', newIsPremium);
+      
+      // Gerekirse premium.html yönlendirmesi (sadece geçiş sırasında)
+      if (newIsPremium) {
+        window.location.href = 'premium.html';
+      } else {
+        updatePremiumButton(newIsPremium);
+      }
+    }
+
+    // Premium butonunu güncelleme işlevi
+    function updatePremiumButton(isActive) {
+      premiumButtonContainer.innerHTML = '';
+      const newButton = document.createElement('button');
+      newButton.className = 'my-button';
+      newButton.onclick = togglePremium;
+      
+      if (isActive) {
+        newButton.textContent = 'Premium modu iptal et';
+      } else {
+        newButton.textContent = 'Premium moda geç';
+      }
+      
+      premiumButtonContainer.appendChild(newButton);
+    }
+  </script>
+  
+</body>
+</html>

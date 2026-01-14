@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MSSDrive (Klasör Desteği)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { max-width: 900px; margin: 20px auto; padding: 0 10px; }
+        h1 { color: #2c3e50; margin-bottom: 20px; text-align: center; }
+        .top-controls { margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+        input, textarea, button, select, .file-upload { padding: 8px; border-radius: 4px; border: 1px solid #bdc3c7; }
+        input[type="text"] { flex: 1; min-width: 200px; }
+        button { background: #3498db; color: white; cursor: pointer; border: none; }
+        button:hover { background: #2980b9; }
+        .delete-btn { background: #e74c3c; }
+        .delete-btn:hover { background: #c0392b; }
+        .preview-btn { background: #2ecc71; }
+        .preview-btn:hover { background: #27ae60; }
+        .folder-btn { background: #f39c12; }
+        .folder-btn:hover { background: #e67e22; }
+        .nav-path { margin: 10px 0; padding: 10px; background: #ecf0f1; border-radius: 4px; }
+        .nav-item { cursor: pointer; color: #3498db; text-decoration: underline; margin-right: 5px; }
+        .nav-item:hover { color: #2980b9; }
+        #storageTree { margin-bottom: 20px; border: 1px solid #bdc3c7; border-radius: 4px; padding: 10px; }
+        .tree-item { display: flex; align-items: center; gap: 5px; padding: 5px; margin: 2px 0; border-radius: 2px; }
+        .tree-item:hover { background: #f8f9fa; }
+        .tree-item.folder { margin-left: 20px; }
+        .tree-icon { font-size: 1.2em; }
+        .tree-name { cursor: pointer; flex: 1; }
+        .content-area { margin-bottom: 20px; }
+        textarea { width: 100%; height: 200px; margin-top: 10px; resize: vertical; }
+        .image-preview { max-width: 100%; max-height: 300px; margin-top: 10px; border-radius: 4px; border: 1px solid #bdc3c7; padding: 5px; display: none; }
+        .file-upload { display: flex; align-items: center; gap: 5px; cursor: pointer; background: #ecf0f1; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <h1>MSSDrive (Klasör Sistemi)</h1>
+
+    <!-- Üst Kontroller -->
+    <div class="top-controls">
+        <input type="text" id="itemName" placeholder="Klasör/dosya adı (örn: Projeler veya foto.png)">
+        <select id="itemType">
+            <option value="folder">Klasör Oluştur</option>
+            <option value="text">Metin Dosyası</option>
+            <option value="image">Resim Dosyası</option>
+        </select>
+        <button class="folder-btn" onclick="createItem()">Oluştur/Kaydet</button>
+        <button onclick="clearSelectedItem()">Temizle</button>
+        <button onclick="goToRoot()">Ana Klasör</button>
+    </div>
+
+    <!-- Gezinme Yolu -->
+    <div class="nav-path" id="navPath">
+        <span class="nav-item" data-path="">Ana Klasör</span>
+    </div>
+
+    <!-- Depolama Ağacı Görünümü -->
+    <div id="storageTree">
+        <h3>Depolama Yapısı</h3>
+    </div>
+
+    <!-- İçerik Alanı -->
+    <div class="content-area">
+        <textarea id="textContent" placeholder="Metin içeriğini buraya yazın..."></textarea>
+        <div class="file-upload" id="imageUploadArea">
+            <span>Resim Seç</span>
+            <input type="file" id="imageFile" accept="image/jpeg, image/png, image/gif" class="hidden">
+        </div>
+        <img id="imagePreview" class="image-preview" alt="Resim Önizleme">
+    </div>
+<div class="content-area">
+    <!-- Mevcut textarea, imageUploadArea ve imagePreview kodları burası -->
+    <button id="downloadCurrentBtn" style="background:#16a085; margin-top:10px; display:none;" onclick="downloadCurrentItem()">Seçili Dosyayı İndir</button>
+</div>
+
+<button style="background:#16a085;" onclick="downloadItem('${name}')">İndir</button>
+
+    <script>
+        // Mevcut yol (başlangıçta ana klasör)
+        let currentPath = [];
+        // Depolama yapısı anahtarı
+        const STORAGE_KEY = 'MSSDrive_Data';
+
+        // Sayfa yüklendiğinde hazırlık
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeStorage();
+            updateStorageTree();
+            updateNavPath();
+            toggleContentArea();
+            // Resim yükleme bağlantıları
+            document.getElementById('imageUploadArea').addEventListener('click', () => document.getElementById('imageFile').click());
+            document.getElementById('imageFile').addEventListener('change', previewImage);
+            // Öğe türü değişiminde alanları güncelle
+            document.getElementById('itemType').addEventListener('change', toggleContentArea);
+        });
+
+        // Depolamayı başlat (eğer boşsa varsayılan yapıyı oluştur)
+        function initializeStorage() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            if (!data) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                    type: 'folder',
+                    items: {}
+                }));
+            }
+        }
+
+        // Geçerli klasörü al
+        function getCurrentFolder() {
+            let data = JSON.parse(localStorage.getItem(STORAGE_KEY));
+            for (const folder of currentPath) {
+                if (!data.items[folder]) return null;
+                data = data.items[folder];
+            }
+            return data;
+        }
+
+        // İçerik alanını türüne göre ayarla
+        function toggleContentArea() {
+            const type = document.getElementById('itemType').value;
+            const textArea = document.getElementById('textContent');
+            const imageArea = document.getElementById('imageUploadArea');
+            const imagePreview = document.getElementById('imagePreview');
+
+            if (type === 'folder') {
+                textArea.style.display = 'none';
+                imageArea.style.display = 'none';
+                imagePreview.style.display = 'none';
+            } else if (type === 'text') {
+                textArea.style.display = 'block';
+                imageArea.style.display = 'none';
+                imagePreview.style.display = 'none';
+            } else {
+                textArea.style.display = 'none';
+                imageArea.style.display = 'flex';
+                imagePreview.style.display = 'block';
+            }
+        }
+
+        // Resim önizleme
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                document.getElementById('imagePreview').src = e.target.result;
+                document.getElementById('imagePreview').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Gezinme yolunu güncelle
+        function updateNavPath() {
+            const navPath = document.getElementById('navPath');
+            navPath.innerHTML = '<span class="nav-item" data-path="">Ana Klasör</span>';
+            
+            let pathStr = '';
+            for (const folder of currentPath) {
+                pathStr += `${folder}/`;
+                const navItem = document.createElement('span');
+                navItem.className = 'nav-item';
+                navItem.textContent = folder;
+                navItem.dataset.path = pathStr.slice(0, -1);
+                navPath.innerHTML += ` > ${navItem.outerHTML}`;
+            }
+
+            // Tüm gezinti öğelerine tıklama olayı ekle
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    currentPath = item.dataset.path ? item.dataset.path.split('/') : [];
+                    updateStorageTree();
+                    updateNavPath();
+                    clearSelectedItem();
+                });
+            });
+        }
+
+        // Depolama ağacını güncelle
+        function updateStorageTree() {
+            const storageTree = document.getElementById('storageTree');
+            const currentFolder = getCurrentFolder();
+            if (!currentFolder) return;
+
+            storageTree.innerHTML = `<h3>${currentPath.length > 0 ? currentPath.join('/') : 'Ana Klasör'} İçeriği</h3>`;
+
+            // Klasörleri ve dosyaları listele
+            const items = Object.entries(currentFolder.items || {});
+            if (items.length === 0) {
+                storageTree.innerHTML += '<p>Bu klasör boş.</p>';
+                return;
+            }
+
+            items.forEach(([name, item]) => {
+                const treeItem = document.createElement('div');
+                treeItem.className = `tree-item ${item.type}`;
+                treeItem.innerHTML = `
+                    <span class="tree-icon">${item.type === 'folder' ? '📁' : item.type === 'text' ? '📄' : '🖼️'}</span>
+                    <span class="tree-name">${name}</span>
+                    <button class="preview-btn" onclick="previewItem('${name}')">Önizle</button>
+                    <button class="delete-btn" onclick="deleteItem('${name}')">Sil</button>
+                `;
+
+                // Klasöre tıklandığında içine gir
+                if (item.type === 'folder') {
+                    treeItem.querySelector('.tree-name').addEventListener('click', () => {
+                        currentPath.push(name);
+                        updateStorageTree();
+                        updateNavPath();
+                        clearSelectedItem();
+                    });
+                } else {
+                    // Dosyayı tıklandığında aç
+                    treeItem.querySelector('.tree-name').addEventListener('click', () => openItem(name));
+                }
+
+                storageTree.appendChild(treeItem);
+            });
+        }
+
+        // Öğe oluştur/kaydet
+        function createItem() {
+            const itemName = document.getElementById('itemName').value.trim();
+            const itemType = document.getElementById('itemType').value;
+            if (!itemName) {
+                alert('Lütfen isim girin!');
+                return;
+            }
+
+            const currentFolder = getCurrentFolder();
+            if (!currentFolder) return;
+
+            // Öğeyi oluştur
+            if (itemType === 'folder') {
+                if (currentFolder.items[itemName]) {
+                    alert('Bu isimde bir öğe zaten var!');
+                    return;
+                }
+                currentFolder.items[itemName] = { type: 'folder', items: {} };
+            } else {
+                let content = '';
+                if (itemType === 'text') {
+                    content = document.getElementById('textContent').value;
+                } else {
+                    const previewSrc = document.getElementById('imagePreview').src;
+                    if (!previewSrc) {
+                        alert('Lütfen bir resim seçin!');
+                        return;
+                    }
+                    content = previewSrc;
+                }
+                currentFolder.items[itemName] = { type: itemType, content: content };
+            }
+
+            // Değişiklikleri kaydet
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(JSON.parse(localStorage.getItem(STORAGE_KEY))));
+            alert(`${itemType === 'folder' ? 'Klasör' : 'Dosya'} başarıyla oluşturuldu!`);
+            updateStorageTree();
+            clearSelectedItem();
+        }
+
+        // Öğeyi aç
+        function openItem(itemName) {
+            const currentFolder = getCurrentFolder();
+            const item = currentFolder.items[itemName];
+            if (!item) return;
+
+            document.getElementById('itemName').value = itemName;
+            document.getElementById('itemType').value = item.type;
+            toggleContentArea();
+
+            if (item.type === 'text') {
+                document.getElementById('textContent').value = item.content;
+            } else if (item.type === 'image') {
+                document.getElementById('imagePreview').src = item.content;
+                document.getElementById('imagePreview').style.display = 'block';
+            }
+        }
+
+        // Öğeyi önizle
+        function previewItem(itemName) {
+            const currentFolder = getCurrentFolder();
+            const item = currentFolder.items[itemName];
+            if (!item) return;
+
+            if (item.type === 'folder') {
+                alert(`"${itemName}" bir klasördür. İçine girmek için üzerine tıklayın.`);
+            } else if (item.type === 'text') {
+                alert(`Dosya İçeriği:\n\n${item.content}`);
+            } else {
+                window.open(item.content, '_blank').document.write(`<img src="${item.content}" style="max-width:100%;">`);
+            }
+        }
+
+        // Öğeyi sil
+        function deleteItem(itemName) {
+            if (!confirm(`"${itemName}" öğesini silmek istediğinizden emin misiniz?`)) return;
+            
+            const currentFolder = getCurrentFolder();
+            delete currentFolder.items[itemName];
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(JSON.parse(localStorage.getItem(STORAGE_KEY))));
+            updateStorageTree();
+            clearSelectedItem();
+        }
+
+        // Seçili öğeyi temizle
+        function clearSelectedItem() {
+            document.getElementById('itemName').value = '';
+            document.getElementById('textContent').value = '';
+            document.getElementById('imageFile').value = '';
+            document.getElementById('imagePreview').src = '';
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('itemType').value = 'folder';
+            toggleContentArea();
+        }
+
+        // Ana klasöre dön
+        function goToRoot() {
+            currentPath = [];
+            updateStorageTree();
+            updateNavPath();
+            clearSelectedItem();
+        }
+        
+        // Seçili dosyayı indir
+function downloadCurrentItem() {
+    const itemName = document.getElementById('itemName').value.trim();
+    if (!itemName) {
+        alert('Lütfen önce bir dosya açın veya oluşturun!');
+        return;
+    }
+    downloadItem(itemName);
+}
+
+// Herhangi bir dosyayı indir
+function downloadItem(itemName) {
+    const currentFolder = getCurrentFolder();
+    const item = currentFolder.items[itemName];
+    
+    if (!item || item.type === 'folder') {
+        alert('Sadece metin ve resim dosyaları indirilebilir!');
+        return;
+    }
+
+    const link = document.createElement('a');
+    link.style.display = 'none';
+    document.body.appendChild(link);
+
+    if (item.type === 'text') {
+        const blob = new Blob([item.content], { type: 'text/plain;charset=utf-8' });
+        link.href = URL.createObjectURL(blob);
+    } else if (item.type === 'image') {
+        link.href = item.content;
+    }
+
+    link.download = itemName;
+    link.click();
+    URL.revokeObjectURL(link.href);
+    document.body.removeChild(link);
+}
+
+// Dosya açıldığında indirme butonunu göster
+function openItem(itemName) {
+    const currentFolder = getCurrentFolder();
+    const item = currentFolder.items[itemName];
+    if (!item) return;
+
+    document.getElementById('itemName').value = itemName;
+    document.getElementById('itemType').value = item.type;
+    toggleContentArea();
+
+    if (item.type === 'text') {
+        document.getElementById('textContent').value = item.content;
+    } else if (item.type === 'image') {
+        document.getElementById('imagePreview').src = item.content;
+        document.getElementById('imagePreview').style.display = 'block';
+    }
+
+    // İndirme butonunu göster
+    document.getElementById('downloadCurrentBtn').style.display = 'block';
+}
+
+    </script>
+    <button onclick="window.location.href='home.html'" class="my-button">
+   Ana sayfaya dön
+ </button>
+ 
+</body>
+</html>

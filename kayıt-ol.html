@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MSS WEB SİTESİ - KAYIT OL</title>
+  <style>
+    /* Giriş alanları için genel stil */
+    input[type="email"],
+    input[type="password"],
+    input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    /* Uyarı mesajı stili */
+    .warning-text {
+      color: #ff5722;
+      font-size: 14px;
+      margin: 0 0 15px;
+    }
+
+    /* Buton stili */
+    .my-button {
+      padding: 10px 20px;
+      background-color: #9c27b0;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .my-button:hover {
+      background-color: #7b1fa2;
+    }
+
+    /* Başlık ve paragraf stilleri */
+    h1 {
+      color: purple;
+    }
+    p {
+      color: blue;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>MSS WEB SİTESİ - KAYIT OL</h1>
+  <p>Kayıt ol.</p>
+  <input type="email" id="email" name="email" placeholder="E-posta adresiniz">
+  <input type="password" id="password" name="password" placeholder="Şifreniz">
+  
+  <input type="number" id="age" name="age" placeholder="Yaşınız">
+  <p class="warning-text">Küçük yaşta internet kullanırken telefonu ebeveynlerinize verin.</p>
+  
+  <button onclick="window.location.href='home.html'" class="my-button">
+   Kayıt Ol
+ </button>
+ 
+  <button onclick="window.location.href='index.html'" class="my-button">
+    Zaten hesabın var mı? Buraya tıklayarak giriş yap.
+  </button>
+</body>
+</html>

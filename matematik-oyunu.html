@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MSS WEB SİTESİ - MATEMATİK OYUNU</title>
+  <style>
+    /* Genel stil */
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 0 20px;
+      background-color: #f9f3fc;
+    }
+
+    /* Başlık stili */
+    h1 {
+      color: #9c27b0;
+      text-align: center;
+      border-bottom: 3px solid #9c27b0;
+      padding-bottom: 10px;
+    }
+
+    /* Oyun alanı */
+    .game-container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(156, 39, 176, 0.2);
+      text-align: center;
+    }
+
+    /* Sorular alanı */
+    .question-area {
+      font-size: 28px;
+      margin: 20px 0;
+      padding: 20px;
+      background-color: #f3e5f5;
+      border-radius: 10px;
+      color: #4a148c;
+    }
+
+    /* Cevap girişi */
+    #answer {
+      width: 150px;
+      padding: 10px;
+      font-size: 20px;
+      text-align: center;
+      border: 2px solid #9c27b0;
+      border-radius: 5px;
+      margin-right: 10px;
+    }
+
+    /* Butonlar */
+    .game-btn {
+      padding: 10px 25px;
+      font-size: 20px;
+      background-color: #9c27b0;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    .game-btn:hover {
+      background-color: #7b1fa2;
+    }
+
+    /* Skor ve mesaj alanı */
+    .score-area {
+      margin-top: 20px;
+      font-size: 22px;
+      color: #4a148c;
+    }
+    .message {
+      margin-top: 15px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .correct {
+      color: #2e7d32;
+    }
+    .wrong {
+      color: #c62828;
+    }
+  </style>
+</head>
+<body>
+  <h1>MSS WEB SİTESİ - EĞLENCELİ MATEMATİK OYUNU</h1>
+
+  <div class="game-container">
+    <div class="question-area" id="question">
+      <!-- Soru burada gösterilecek -->
+    </div>
+
+    <input type="number" id="answer" placeholder="Cevabını yaz...">
+    <button class="game-btn" onclick="checkAnswer()">Cevapla</button>
+    <button class="game-btn" onclick="startGame()">Yeni Oyun</button>
+
+    <div class="score-area">
+      Skor: <span id="score">0</span>
+      <div id="message" class="message"></div>
+    </div>
+  </div>
+
+  <script>
+    let score = 0;
+    let num1, num2, correctAnswer;
+
+    // Oyunu başlat
+    function startGame() {
+      score = 0;
+      document.getElementById("score").textContent = score;
+      document.getElementById("message").textContent = "";
+      document.getElementById("message").className = "message";
+      generateQuestion();
+    }
+
+    // Soru oluştur
+    function generateQuestion() {
+      // 1 ile 50 arasında sayılar
+      num1 = Math.floor(Math.random() * 50) + 1;
+      num2 = Math.floor(Math.random() * 50) + 1;
+      
+      // Rastgele işlem seç (toplama veya çıkarma)
+      const operation = Math.random() > 0.5 ? "+" : "-";
+      
+      // Çıkarma işleminde sonuç negatif olmasın
+      if (operation === "-" && num1 < num2) {
+        [num1, num2] = [num2, num1];
+      }
+
+      // Doğru cevabı hesapla
+      correctAnswer = operation === "+" ? num1 + num2 : num1 - num2;
+
+      // Soruyu göster
+      document.getElementById("question").textContent = `${num1} ${operation} ${num2} = ?`;
+      document.getElementById("answer").value = "";
+    }
+
+    // Cevabı kontrol et
+    function checkAnswer() {
+      const userAnswer = parseInt(document.getElementById("answer").value);
+      const messageElement = document.getElementById("message");
+
+      if (isNaN(userAnswer)) {
+        messageElement.textContent = "Lütfen sayı gir!";
+        messageElement.className = "message wrong";
+        return;
+      }
+
+      if (userAnswer === correctAnswer) {
+        score++;
+        messageElement.textContent = "Harika! Doğru cevap 🎉";
+        messageElement.className = "message correct";
+        document.getElementById("score").textContent = score;
+        // Bir sonraki soruyu göster
+        setTimeout(generateQuestion, 1500);
+      } else {
+        messageElement.textContent = `Yanlış! Doğru cevap ${correctAnswer} 😢`;
+        messageElement.className = "message wrong";
+      }
+    }
+
+    // Sayfa yüklendiğinde oyunu başlat
+    window.onload = startGame;
+  </script>
+  <button onclick="window.location.href='home.html'" class="my-button">
+   Ana sayfaya dön
+ </button>
+</body>
+</html>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MSS WEB SİTESİ - BULMACA OYUNU</title>
+  <style>
+    /* Genel Stil */
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f9f3fc;
+    }
+
+    /* Başlık Stili */
+    h1 {
+      color: #9c27b0;
+      text-align: center;
+      border-bottom: 3px solid #9c27b0;
+      padding-bottom: 10px;
+      margin-bottom: 30px;
+    }
+
+    /* Oyun Konteyneri */
+    .puzzle-container {
+      background-color: white;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(156, 39, 176, 0.2);
+      padding: 30px;
+      text-align: center;
+    }
+
+    /* Bulmaca Bilgileri */
+    .puzzle-info {
+      font-size: 18px;
+      color: #4a148c;
+      margin-bottom: 20px;
+    }
+    .category {
+      font-weight: bold;
+      color: #9c27b0;
+    }
+    .hint {
+      margin-top: 10px;
+      color: #666;
+    }
+
+    /* Harf Butonları */
+    .letters-area {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+      margin: 30px 0;
+    }
+    .letter-btn {
+      padding: 15px;
+      font-size: 20px;
+      background-color: #f3e5f5;
+      color: #4a148c;
+      border: 2px solid #9c27b0;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .letter-btn:hover {
+      background-color: #9c27b0;
+      color: white;
+    }
+    .letter-btn:disabled {
+      background-color: #ddd;
+      color: #999;
+      border-color: #bbb;
+      cursor: not-allowed;
+    }
+
+    /* Kelime Alanı */
+    .word-area {
+      margin: 20px 0;
+      font-size: 28px;
+      letter-spacing: 10px;
+      color: #4a148c;
+      font-weight: bold;
+      min-height: 40px;
+    }
+
+    /* Skor ve Butonlar */
+    .game-stats {
+      font-size: 20px;
+      color: #4a148c;
+      margin-bottom: 20px;
+    }
+    .game-btn {
+      padding: 10px 25px;
+      font-size: 18px;
+      background-color: #9c27b0;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 0 10px;
+    }
+    .game-btn:hover {
+      background-color: #7b1fa2;
+    }
+    .message {
+      margin-top: 20px;
+      font-size: 22px;
+      font-weight: bold;
+    }
+    .success {
+      color: #2e7d32;
+    }
+    .error {
+      color: #c62828;
+    }
+  </style>
+</head>
+<body>
+  <h1>MSS WEB SİTESİ - EĞLENCELİ BULMACA OYUNU</h1>
+
+  <div class="puzzle-container">
+    <div class="puzzle-info">
+      <div>Kategori: <span class="category" id="category"></span></div>
+      <div class="hint" id="hint">İpucu: <span id="hintText"></span></div>
+    </div>
+
+    <div class="word-area" id="wordArea"></div>
+
+    <div class="letters-area" id="lettersArea"></div>
+
+    <div class="game-stats">
+      Deneme Hakkın: <span id="tries">5</span> | Skor: <span id="score">0</span>
+    </div>
+
+    <button class="game-btn" onclick="newPuzzle()">Yeni Bulmaca</button>
+    <button class="game-btn" onclick="showHint()">İpucu Al</button>
+
+    <div id="message" class="message"></div>
+  </div>
+
+  <script>
+    // Bulmaca Kelimeleri ve İpuçları
+    const puzzles = [
+      { word: "BILGISAYAR", category: "TEKNOLOJİ", hint: "Bilgi işlem makinesi" },
+      { word: "MATEMATIK", category: "DERS", hint: "Sayılar ve işlemelerle ilgilenen bilim dalı" },
+      { word: "PROGRAMLAMA", category: "BİLİM", hint: "Bilgisayara komut verme dili" },
+      { word: "KEDİ", category: "HAYVAN", hint: "Evcil ve sevimli memeli" },
+      { word: "ÇİÇEK", category: "BİTKİ", hint: "Bitkinin güzel renkli kısmı" },
+      { word: "FUTBOL", category: "SPOR", hint: "Top kullanılarak oynanan takım sporu" },
+      { word: "KİTAP", category: "KÜLTÜR", hint: "Yazılı bilgilerin toplandığı nesne" },
+      { word: "UZAY", category: "BİLİM", hint: "Dünyamızın dışındaki geniş alan" },
+      { word: "MÜZİK", category: "SANAT", hint: "Seslerle oluşturulan güzel kompozisyon" },
+      { word: "PİZZA", category: "YEMEK", hint: "İtalyan kökenli popüler yemek" }
+    ];
+
+    let currentPuzzle, currentWord, guessedLetters, remainingTries, score;
+
+    // Oyunu Başlat
+    function startGame() {
+      score = 0;
+      document.getElementById("score").textContent = score;
+      newPuzzle();
+    }
+
+    // Yeni Bulmaca Getir
+    function newPuzzle() {
+      const randomIndex = Math.floor(Math.random() * puzzles.length);
+      currentPuzzle = puzzles[randomIndex];
+      currentWord = currentPuzzle.word.toUpperCase();
+      guessedLetters = [];
+      remainingTries = 5;
+
+      // Arayüzü Güncelle
+      document.getElementById("category").textContent = currentPuzzle.category;
+      document.getElementById("hintText").textContent = currentPuzzle.hint;
+      document.getElementById("tries").textContent = remainingTries;
+      document.getElementById("message").textContent = "";
+      document.getElementById("message").className = "message";
+
+      // Kelime Alanını Hazırla
+      updateWordArea();
+
+      // Harf Butonlarını Oluştur
+      createLetterButtons();
+    }
+
+    // Kelime Alanını Güncelle
+    function updateWordArea() {
+      let displayWord = "";
+      for (const letter of currentWord) {
+        if (guessedLetters.includes(letter)) {
+          displayWord += letter;
+        } else {
+          displayWord += "_";
+        }
+      }
+      document.getElementById("wordArea").textContent = displayWord;
+
+      // Kazanma Kontrolü
+      if (!displayWord.includes("_")) {
+        score += 10;
+        document.getElementById("score").textContent = score;
+        document.getElementById("message").textContent = `Tebrikler! Kelime: ${currentWord} 🎉`;
+        document.getElementById("message").className = "message success";
+        disableAllButtons();
+      }
+    }
+
+    // Harf Butonlarını Oluştur
+    function createLetterButtons() {
+      const lettersArea = document.getElementById("lettersArea");
+      lettersArea.innerHTML = "";
+
+      // Rastgele Harfler Oluştur (Kelimenin harfleri + ekstra harfler)
+      const allLetters = "ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ";
+      const wordLetters = [...new Set(currentWord)];
+      const extraLettersCount = 7 - wordLetters.length;
+      const extraLetters = [];
+
+      // Ekstra Harfler Seç
+      while (extraLetters.length < extraLettersCount) {
+        const randomLetter = allLetters[Math.floor(Math.random() * allLetters.length)];
+        if (!wordLetters.includes(randomLetter) && !extraLetters.includes(randomLetter)) {
+          extraLetters.push(randomLetter);
+        }
+      }
+
+      // Tüm Harfleri Birleştir ve Karıştır
+      const allButtonsLetters = [...wordLetters, ...extraLetters];
+      allButtonsLetters.sort(() => Math.random() - 0.5);
+
+      // Butonları Oluştur
+      for (const letter of allButtonsLetters) {
+        const button = document.createElement("button");
+        button.className = "letter-btn";
+        button.textContent = letter;
+        button.onclick = () => guessLetter(letter, button);
+        lettersArea.appendChild(button);
+      }
+    }
+
+    // Harf Tahmin Et
+    function guessLetter(letter, button) {
+      button.disabled = true;
+
+      if (currentWord.includes(letter)) {
+        guessedLetters.push(letter);
+        document.getElementById("message").textContent = "Harika! Doğru harf ✨";
+        document.getElementById("message").className = "message success";
+        updateWordArea();
+      } else {
+        remainingTries--;
+        document.getElementById("tries").textContent = remainingTries;
+        document.getElementById("message").textContent = "Yanlış harf 😢";
+        document.getElementById("message").className = "message error";
+
+        // Kaybetme Kontrolü
+        if (remainingTries === 0) {
+          document.getElementById("message").textContent = `Kaybettin! Doğru kelime: ${currentWord}`;
+          document.getElementById("message").className = "message error";
+          disableAllButtons();
+          // Tüm Harfleri Göster
+          guessedLetters = [...currentWord];
+          updateWordArea();
+        }
+      }
+    }
+
+    // Tüm Butonları Devre Dışı Bırak
+    function disableAllButtons() {
+      const buttons = document.querySelectorAll(".letter-btn");
+      buttons.forEach(btn => btn.disabled = true);
+    }
+
+    // İpucu Al
+    function showHint() {
+      if (remainingTries > 1) {
+        remainingTries--;
+        document.getElementById("tries").textContent = remainingTries;
+        document.getElementById("message").textContent = "İpucu gördün! Bir deneme hakkın azaldı ⚠️";
+        document.getElementById("message").className = "message error";
+      } else {
+        document.getElementById("message").textContent = "Deneme hakkın çok az, ipucu alamazsın! ❌";
+        document.getElementById("message").className = "message error";
+      }
+    }
+
+    // Sayfa Yüklendiğinde Oyunu Başlat
+    window.onload = startGame;
+  </script>
+  
+  <button onclick="window.location.href='home.html'" class="my-button">
+   Ana sayfaya dön
+ </button>
+  
+</body>
+</html>

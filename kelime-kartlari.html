@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MSS WEB SİTESİ - KELİME EZBERLEME KARTLARI</title>
+  <style>
+    /* Genel Stil */
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f9f3fc;
+    }
+
+    /* Başlık Stili */
+    h1 {
+      color: #9c27b0;
+      text-align: center;
+      border-bottom: 3px solid #9c27b0;
+      padding-bottom: 10px;
+      margin-bottom: 30px;
+    }
+
+    /* Kategori Seçimi */
+    .category-select {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .category-btn {
+      padding: 10px 20px;
+      background-color: #f3e5f5;
+      color: #4a148c;
+      border: 2px solid #9c27b0;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 0 5px;
+    }
+    .category-btn.active {
+      background-color: #9c27b0;
+      color: white;
+    }
+
+    /* Kart Konteyneri */
+    .card-container {
+      perspective: 1000px;
+      width: 350px;
+      height: 200px;
+      margin: 0 auto 30px;
+    }
+    /* Kart Stili */
+    .flashcard {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+      box-shadow: 0 4px 8px rgba(156, 39, 176, 0.2);
+      border-radius: 15px;
+      cursor: pointer;
+    }
+    .flashcard.flipped {
+      transform: rotateY(180deg);
+    }
+    .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .card-front {
+      background-color: white;
+      color: #9c27b0;
+      font-size: 28px;
+    }
+    .card-back {
+      background-color: #9c27b0;
+      color: white;
+      font-size: 24px;
+      transform: rotateY(180deg);
+    }
+
+    /* Butonlar ve İstatistik */
+    .controls-area {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .control-btn {
+      padding: 10px 25px;
+      font-size: 18px;
+      background-color: #9c27b0;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 0 10px;
+    }
+    .control-btn:hover {
+      background-color: #7b1fa2;
+    }
+    .stats-area {
+      font-size: 20px;
+      color: #4a148c;
+      margin: 10px 0;
+    }
+    .example-text {
+      font-size: 16px;
+      color: #666;
+      margin-top: 10px;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <h1>MSS WEB SİTESİ - KELİME EZBERLEME KARTLARI</h1>
+
+  <!-- Kategori Seçimi -->
+  <div class="category-select">
+    <button class="category-btn active" onclick="changeCategory('ingilizce')">İNGİLİZCE</button>
+    <button class="category-btn" onclick="changeCategory('bilgisayar')">BİLGİSAYAR TERİMLERİ</button>
+    <button class="category-btn" onclick="changeCategory('fen')">FEN TERİMLERİ</button>
+  </div>
+
+  <!-- Kart Alanı -->
+  <div class="card-container">
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="card-front" id="cardFront"></div>
+      <div class="card-back" id="cardBack"></div>
+    </div>
+  </div>
+
+  <!-- Kontroller ve İstatistik -->
+  <div class="controls-area">
+    <div class="stats-area">
+      Kart: <span id="currentCard">1</span>/<span id="totalCards">10</span>
+    </div>
+    <div class="example-text" id="exampleText"></div>
+    <button class="control-btn" onclick="prevCard()">Önceki Kart</button>
+    <button class="control-btn" onclick="nextCard()">Sonraki Kart</button>
+    <button class="control-btn" onclick="shuffleCards()">Karıştır</button>
+  </div>
+
+  <script>
+    // Kelime Veritabanı
+    const wordCategories = {
+      ingilizce: [
+        { front: "EV", back: "HOUSE", example: "This is my house - Bu benim evim" },
+        { front: "OKUL", back: "SCHOOL", example: "I go to school - Okula gidiyorum" },
+        { front: "KİTAP", back: "BOOK", example: "I read a book - Kitap okuyorum" },
+        { front: "SU", back: "WATER", example: "I drink water - Su içiyorum" },
+        { front: "YEMEK", back: "FOOD", example: "I eat food - Yemek yerim" },
+        { front: "ARAÇ", back: "CAR", example: "I drive a car - Araba kullanırım" },
+        { front: "MÜZİK", back: "MUSIC", example: "I love music - Müziği seviyorum" },
+        { front: "SPOR", back: "SPORT", example: "I play sport - Spor yaparım" },
+        { front: "KEDİ", back: "CAT", example: "This is my cat - Bu benim kedim" },
+        { front: "KOPEK", back: "DOG", example: "Dog is a friend - Köpek dosttur" }
+      ],
+      bilgisayar: [
+        { front: "İŞLEMCİ", back: "PROCESSOR", example: "Beyin gibi çalışır - Works like a brain" },
+        { front: "BEYAZİŞLEM", back: "CPU", example: "Bilgisayarın merkezi - Computer's center" },
+        { front: "BELLİK", back: "MEMORY", example: "Veri depolar - Stores data" },
+        { front: "EKREN", back: "SCREEN", example: "Görüntü gösterir - Shows image" },
+        { front: "KLAVYE", back: "KEYBOARD", example: "Giriş cihazıdır - Input device" },
+        { front: "FARE", back: "MOUSE", example: "Navigasyon için kullanılır - Used for navigation" },
+        { front: "BİLGİSAYAR", back: "COMPUTER", example: "Veri işlem makinesi - Data processing machine" },
+        { front: "İNTERNET", back: "INTERNET", example: "Global ağdır - Global network" },
+        { front: "WEB SİTESİ", back: "WEBSITE", example: "İnternette içerik sunar - Presents content online" },
+        { front: "PROGRAMLAMA", back: "PROGRAMMING", example: "Komut verme dili - Command giving language" }
+      ],
+      fen: [
+        { front: "SU", back: "H₂O", example: "İki hidrojen bir oksijen - Two hydrogen one oxygen" },
+        { front: "HAVA", back: "AIR", example: "Oksijen ve nitrojen içerir - Contains oxygen and nitrogen" },
+        { front: "ATEŞ", back: "FIRE", example: "Yanma reaksiyonudur - Combustion reaction" },
+        { front: "TOPRAK", back: "SOIL", example: "Bitkiler için gerekli - Necessary for plants" },
+        { front: "GÜNEŞ", back: "SUN", example: "Sistemimizin yıldızı - Star of our system" },
+        { front: "AY", back: "MOON", example: "Dünyanın uydusu - Earth's satellite" },
+        { front: "SU BULUTU", back: "CLOUD", example: "Su buharından oluşur - Made of water vapor" },
+        { front: "YAĞMUR", back: "RAIN", example: "Bulutlardan düşer - Falls from clouds" },
+        { front: "KAR", back: "SNOW", example: "Donmuş su kristalleri - Frozen water crystals" },
+        { front: "RÜZGAR", back: "WIND", example: "Havanın hareketi - Movement of air" }
+      ]
+    };
+
+    let currentCategory = "ingilizce";
+    let currentCards = [];
+    let currentIndex = 0;
+
+    // Başlangıç
+    function init() {
+      currentCards = [...wordCategories[currentCategory]];
+      updateCard();
+    }
+
+    // Kategori Değiştir
+    function changeCategory(category) {
+      currentCategory = category;
+      currentIndex = 0;
+
+      // Butonları Güncelle
+      document.querySelectorAll(".category-btn").forEach(btn => {
+        btn.classList.remove("active");
+        if (btn.textContent.toLowerCase() === category) {
+          btn.classList.add("active");
+        }
+      });
+
+      // Kartları Yükle
+      currentCards = [...wordCategories[currentCategory]];
+      updateCard();
+    }
+
+    // Kartı Güncelle
+    function updateCard() {
+      const card = currentCards[currentIndex];
+      document.getElementById("cardFront").textContent = card.front;
+      document.getElementById("cardBack").textContent = card.back;
+      document.getElementById("exampleText").textContent = card.example;
+      document.getElementById("currentCard").textContent = currentIndex + 1;
+      document.getElementById("totalCards").textContent = currentCards.length;
+
+      // Kartı Kapat
+      document.getElementById("flashcard").classList.remove("flipped");
+    }
+
+    // Kartı Çevir
+    function flipCard() {
+      document.getElementById("flashcard").classList.toggle("flipped");
+    }
+
+    // Önceki Kart
+    function prevCard() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateCard();
+      }
+    }
+
+    // Sonraki Kart
+    function nextCard() {
+      if (currentIndex < currentCards.length - 1) {
+        currentIndex++;
+        updateCard();
+      }
+    }
+
+    // Kartları Karıştır
+    function shuffleCards() {
+      currentCards.sort(() => Math.random() - 0.5);
+      currentIndex = 0;
+      updateCard();
+    }
+
+    // Sayfa Yüklendiğinde Başlat
+    window.onload = init;
+  </script>
+  <button onclick="window.location.href='home.html'" class="my-button">
+   Ana sayfaya dön
+ </button>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MSS WEB SİTESİ - HIZ TESTİ OYUNU</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f9f3fc; }
+    h1 { color: #9c27b0; text-align: center; border-bottom: 3px solid #9c27b0; padding-bottom: 10px; }
+    .game-box { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 0 15px rgba(156,39,176,0.2); text-align: center; }
+    .text-area { font-size: 20px; color: #4a148c; margin: 20px 0; padding: 15px; background: #f3e5f5; border-radius: 10px; }
+    #input-area { width: 100%; padding: 15px; font-size: 18px; border: 2px solid #9c27b0; border-radius: 8px; margin: 10px 0; }
+    .stats { font-size: 20px; color: #4a148c; margin: 15px 0; }
+    .btn { padding: 10px 25px; font-size: 18px; background: #9c27b0; color: white; border: none; border-radius: 8px; cursor: pointer; margin: 5px; }
+    .btn:hover { background: #7b1fa2; }
+    .message { font-size: 22px; font-weight: bold; margin-top: 20px; }
+    .success { color: #2e7d32; }
+  </style>
+</head>
+<body>
+  <h1>MSS WEB SİTESİ - KLAVYE HIZ TESTİ</h1>
+  <div class="game-box">
+    <div class="text-area" id="target-text">Buraya gelecek metni hızlıca yaz!</div>
+    <input type="text" id="input-area" placeholder="Metni buraya yaz..." disabled>
+    <div class="stats">
+      Süre: <span id="time">0</span> sn | Doğru Harf: <span id="correct">0</span> | Yanlış Harf: <span id="wrong">0</span>
+    </div>
+    <button class="btn" onclick="startGame()">Oyun Başlat</button>
+    <div class="message" id="message"></div>
+  </div>
+
+  <script>
+    const texts = [
+      "Merhaba dünya! Klavye hızını test etmeye hazır mısın?",
+      "Programlama çok eğlenceli bir hobidir ve herkes öğrenebilir.",
+      "İstanbul güzel bir şehirdir ve tarihi yerleri vardır.",
+      "Muzik dinlemek stresi atmaya yardımcı olur.",
+      "Kitap okumak zihnimizi geliştirir ve bilgimizi artırır."
+    ];
+    let targetText, startTime, isPlaying = false;
+
+    function startGame() {
+      targetText = texts[Math.floor(Math.random() * texts.length)];
+      document.getElementById("target-text").textContent = targetText;
+      document.getElementById("input-area").value = "";
+      document.getElementById("input-area").disabled = false;
+      document.getElementById("time").textContent = "0";
+      document.getElementById("correct").textContent = "0";
+      document.getElementById("wrong").textContent = "0";
+      document.getElementById("message").textContent = "";
+      startTime = Date.now();
+      isPlaying = true;
+      document.getElementById("input-area").focus();
+      checkInput();
+    }
+
+    function checkInput() {
+      const input = document.getElementById("input-area").value;
+      let correct = 0, wrong = 0;
+
+      for(let i=0; i<input.length; i++){
+        if(input[i] === targetText[i]) correct++;
+        else wrong++;
+      }
+
+      document.getElementById("correct").textContent = correct;
+      document.getElementById("wrong").textContent = wrong;
+      document.getElementById("time").textContent = Math.floor((Date.now() - startTime)/1000);
+
+      if(input === targetText && isPlaying){
+        isPlaying = false;
+        const time = Math.floor((Date.now() - startTime)/1000);
+        const speed = Math.round((targetText.length / time) * 60);
+        document.getElementById("message").textContent = `Tebrikler! Hızın: ${speed} harf/dakika 🎉`;
+        document.getElementById("message").className = "message success";
+        document.getElementById("input-area").disabled = true;
+      } else if(isPlaying){
+        setTimeout(checkInput, 100);
+      }
+    }
+  </script>
+  <button onclick="window.location.href='home.html'" class="my-button">
+   Ana sayfaya dön
+ </button>
+</body>
+</html>

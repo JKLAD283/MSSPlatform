@@ -1,0 +1,54 @@
+<!DOCTYPE html> <!-- Doctype tanımı düzeltildi -->
+<html lang="tr"> <!-- HTML etiketi eklendi ve dil belirtilmiş -->
+<head>
+  <meta charset="UTF-8"> <!-- Karakter seti eklendi -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Duyarlı tasarım için -->
+  <title>MSS WEB SİTESİ - GİRİŞ YAP</title>
+  <style>
+    /* E-posta ve şifre giriş alanları için stil eklendi */
+    input[type="email"], 
+    input[type="password"] {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0 15px; /* Boşluk eklendi */
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box; /* Genişlik hesaplaması düzeltildi */
+    }
+
+    .my-button {
+      padding: 10px 20px;
+      background-color: #9c27b0;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .my-button:hover {
+      background-color: #7b1fa2;
+    }
+
+    h1 {
+      color: purple;
+    }
+
+    p {
+      color: blue;
+      margin: 10px 0; /* Boşluk eklendi */
+    }
+  </style>
+</head>
+<body>
+  <h1>MSS WEB SİTESİ - GİRİŞ YAP</h1>
+  <p>Giriş yapın.</p> <!-- Kapanış etiketi düzeltildi -->
+  <input type="email" id="email" name="email" placeholder="E-posta adresiniz"> <!-- Placeholder eklendi, yazım hatası düzeltildi -->
+  <input type="password" id="password" name="password" placeholder="Şifreniz"> <!-- Placeholder eklendi -->
+  <button onclick="window.location.href='kayıt-ol.html'" class="my-button"> <!-- Dosya adında boşluk yerine kısa çizgi önerilir -->
+    Hesabın yok mu? Buraya tıklayarak yeni hesap oluştur. <!-- Yazım hatası düzeltildi -->
+  </button>
+  <button onclick="window.location.href='home.html'" class="my-button">
+   Giriş Yap
+ </button>
+</body>
+</html>
