@@ -1,0 +1,72 @@
+/* === ORTAK SAYFA STİLLERİ === */
+body {
+  transition: background-color 0.3s, color 0.3s;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  margin: 0;
+}
+
+/* Temalar (settings.html'den taşındı) */
+.light-mode {
+  background-color: #ffffff;
+  color: #000000;
+}
+.dark-mode {
+  background-color: #1a1a1a;
+  color: #ffffff;
+}
+
+/* Buton Stilleri (ortak kullanım için) */
+.my-button {
+  padding: 10px 15px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  margin-top: 20px;
+  margin-right: 10px;
+}
+.mode-selector {
+  padding: 10px 15px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+/* === TAM EKRAN REKLAM STİLLERİ === */
+#fullscreenAd {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000;
+  z-index: 99999;
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+#adFullImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+#closeAdBtn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 40px;
+  color: #fff;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+#closeAdBtn.visible {
+  opacity: 1;
+}
+body.premium-active #fullscreenAd {
+  display: none !important;
+}
