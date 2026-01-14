@@ -3,20 +3,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const isPremium = localStorage.getItem('isPremium') === 'true';
   const body = document.body;
 
-  // Premium durumu için body sınıfı ekle
-  if (isPremium) {
-    body.classList.add('premium-active');
-  } else {
-    body.classList.remove('premium-active');
-  }
+  // Premium ve tema ayarları
+  if (isPremium) body.classList.add('premium-active');
+  else body.classList.remove('premium-active');
 
-  // Tema ayarlarını uygula (settings.html dışındaki sayfalarda da çalışır)
   const savedMode = localStorage.getItem('themeMode') || 'light';
   body.className = `${savedMode}-mode ${isPremium ? 'premium-active' : ''}`;
 
-  // Eğer sayfada tema seçici varsa çalıştır
-  const modeSelector = document.getElementById('mode');
-  if (modeSelector) {
+  if (document.getElementById('mode')) {
+    const modeSelector = document.getElementById('mode');
     modeSelector.value = savedMode;
     modeSelector.addEventListener('change', (e) => {
       const selectedMode = e.target.value;
@@ -25,9 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Eğer sayfada premium butonu kapsayıcısı varsa çalıştır
-  const premiumButtonContainer = document.getElementById('premiumButtonContainer');
-  if (premiumButtonContainer) {
+  if (document.getElementById('premiumButtonContainer')) {
     updatePremiumButton(isPremium);
   }
 
@@ -36,19 +29,59 @@ document.addEventListener('DOMContentLoaded', () => {
   const closeAdBtn = document.getElementById('closeAdBtn');
   const AD_INTERVAL = 30000; // 30 saniye
 
-  if (!isPremium && fullscreenAd && closeAdBtn) {
-    // İlk reklamı göster ve döngüyü başlat
-    showAd();
-    setInterval(showAd, AD_INTERVAL);
+  // Ücretsiz rastgele servisler
+  const RANDOM_IMAGE_API = 'https://picsum.photos/1920/1080'; // Tam ekran görsel
+  const RANDOM_LINK_SOURCES = [
+    'https://www.google.com/search?q=rastgele+ürün',
+    'https://www.bing.com/discover',
+    'https://unsplash.com',
+    'https://www.wikipedia.org/wiki/Special:Random',
+    'https://www.youtube.com/results?search_query=popüler+videolar'
+  ];
 
-    // Kapatma butonu işlevi
+  if (!isPremium && fullscreenAd && closeAdBtn) {
+    showRandomWebAd();
+    setInterval(showRandomWebAd, AD_INTERVAL);
+
     closeAdBtn.addEventListener('click', () => {
       fullscreenAd.style.display = 'none';
     });
   }
+
+  // İnternetten rastgele reklam gösteren fonksiyon
+  function showRandomWebAd() {
+    const fullscreenAd = document.getElementById('fullscreenAd');
+    const closeAdBtn = document.getElementById('closeAdBtn');
+
+    // Rastgele bağlantı seç
+    const randomLink = RANDOM_LINK_SOURCES[Math.floor(Math.random() * RANDOM_LINK_SOURCES.length)];
+    // Rastgele görsel - her seferinde farklı olur (picsum.photos otomatik rastgele gönderir)
+    const randomImage = `${RANDOM_IMAGE_API}?random=${Date.now()}`; // Benzersizlik için zaman damgası
+
+    // Reklam içeriğini güncelle
+    fullscreenAd.innerHTML = `
+      <a href="${randomLink}" target="_blank" rel="noopener noreferrer">
+        <img src="${randomImage}" alt="Rastgele Reklam Görseli" id="adFullImage">
+      </a>
+      <button id="closeAdBtn">&times;</button>
+    `;
+
+    // Kapatma butonu ayarları
+    const yeniCloseBtn = fullscreenAd.querySelector('#closeAdBtn');
+    yeniCloseBtn.addEventListener('click', () => {
+      fullscreenAd.style.display = 'none';
+    });
+
+    // Reklamı göster
+    fullscreenAd.style.display = 'flex';
+    yeniCloseBtn.classList.remove('visible');
+    setTimeout(() => {
+      yeniCloseBtn.classList.add('visible');
+    }, 5000);
+  }
 });
 
-// Premium butonu güncelleme fonksiyonu
+// Diğer fonksiyonlar aynı kalır
 function updatePremiumButton(isActive) {
   const premiumButtonContainer = document.getElementById('premiumButtonContainer');
   premiumButtonContainer.innerHTML = '';
@@ -59,27 +92,11 @@ function updatePremiumButton(isActive) {
   premiumButtonContainer.appendChild(newButton);
 }
 
-// Premium mod aç/kapat fonksiyonu
 function togglePremium() {
   const currentIsPremium = localStorage.getItem('isPremium') === 'true';
   const newIsPremium = !currentIsPremium;
   localStorage.setItem('isPremium', newIsPremium);
   
-  if (newIsPremium) {
-    window.location.href = 'premium.html';
-  } else {
-    window.location.reload(); // Sayfayı yenileyerek değişiklikleri uygula
-  }
-}
-
-// Reklam göster fonksiyonu
-function showAd() {
-  const fullscreenAd = document.getElementById('fullscreenAd');
-  const closeAdBtn = document.getElementById('closeAdBtn');
-  closeAdBtn.classList.remove('visible');
-  fullscreenAd.style.display = 'flex';
-  
-  setTimeout(() => {
-    closeAdBtn.classList.add('visible');
-  }, 5000);
+  if (newIsPremium) window.location.href = 'premium.html';
+  else window.location.reload();
 }
