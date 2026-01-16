@@ -50,21 +50,21 @@
             transform: translateX(-50%) translateZ(-10px);
         }
 
-        /* 3D Çanta - GÖRÜNÜR HALE GETİRİLDİ! */
+        /* 3D Çanta - ÇOK YUKARIDA! */
         .bag {
             position: absolute;
-            bottom: 25%;
+            bottom: 40%; /* Çok yukarı çekildi */
             left: 18%;
-            width: 60px; /* Biraz büyütüldü */
-            z-index: 1; /* Katman düzeltildi */
+            width: 60px;
+            z-index: 1;
             transform-style: preserve-3d;
             transform: rotateY(20deg) translateZ(5px);
             transition: all 1.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
         }
         .bag.throw {
             transform: translateX(-50%) rotateY(30deg) rotateZ(720deg) scale(1.4) translateZ(15px);
-            left: 30%; /* Pozisyon düzeltildi */
-            bottom: 0%;
+            left: 30%;
+            bottom: 20%; /* Fırlatıldıktan sonra da yukarıda */
             z-index: 1;
         }
         .bag.open {
@@ -85,7 +85,7 @@
         }
         .bag-shadow {
             position: absolute;
-            bottom: 0;
+            bottom: -5px;
             left: 50%;
             width: 80%;
             height: 10px;
@@ -221,7 +221,7 @@
             </svg>
         </div>
 
-        <!-- 3D Çanta - ARTİK GÖRÜNÜYOR! -->
+        <!-- 3D Çanta - ARTİK YUKARIDA GÖRÜNÜYOR! -->
         <div class="bag" id="bag">
             <div class="bag-shadow"></div>
             <svg viewBox="0 0 60 70" fill="none" xmlns="http://www.w3.org/2000/svg">
